@@ -1,0 +1,183 @@
+options
+{
+  	LOOKAHEAD = 2;
+  	FORCE_LA_CHECK = true;
+}
+PARSER_BEGIN(Compilador)
+class Compilador
+{
+
+	public static void main(String [] Args) throws ParseException
+	{
+
+		try
+		{
+		
+			Compilador c = new Compilador(System.in);
+			c.Clase();
+			System.out.println("Exito.");
+		
+		}
+		catch(ParseException e)
+		{
+		
+			System.out.println(e.getMessage());
+			System.out.println("Error.");
+
+		}
+	  
+	}
+  
+}
+PARSER_END(Compilador)
+//Funcionamiento del programa
+TOKEN:
+{
+
+	<CorcheteIzquierdo: "["> {System.out.println("CorcheteIzquierdo -> "+ image);}
+| 	<CorcheteDerecho: "]"> {System.out.println("CorcheteDerecho -> "+ image);}
+| 	<ParentesisIzquierdo: "("> {System.out.println("ParentesisIzquierdo -> "+image);}
+| 	<ParentesisDerecho: ")"> {System.out.println("ParentesisDerecho -> "+image);}
+| 	<LlaveIzquierda: "{"> {System.out.println("LlaveIzquierda -> "+ image);}
+| 	<LlaveDerecha: "}"> {System.out.println("LlaveDerecha -> "+ image);}
+| 	<PuntoComa: ";"> {System.out.println("Punto y coma -> "+ image);}
+
+}
+//Declaración de clase
+TOKEN:
+{
+
+	<Clase: "class"> {System.out.println("\nClase -> " + image);}
+
+}
+//Declaración del método
+TOKEN:
+{
+
+	<Publico: "public"> {System.out.println("Publico -> "+ image); }
+| 	<Regresar: "return"> {System.out.println("Regresar -> "+ image);}
+
+}
+//Tipo de dato
+TOKEN:
+{
+
+	<EnteroArreglo: "int []"> {System.out.println("EnteroArreglo -> "+ image);}
+| 	<Entero: "int"> {System.out.println("Entero -> "+ image);}
+| 	<Booleano: "boolean"> {System.out.println("Booleano -> "+ image);}
+
+}
+//Sentencia
+TOKEN:
+{
+
+	<Si: "if"> {System.out.println("Si -> "+ image);}
+| 	<Entonces: "else"> {System.out.println("Entonces -> "+ image);}
+| 	<Mientras: "while"> {System.out.println("Mientras -> "+ image);}
+| 	<Imprimir: "System.out.println"> {System.out.println("Imprimir -> "+ image);}
+| 	<Asignacion: "="> {System.out.println("Asignacion -> "+ image);}
+
+}
+//Expresión
+TOKEN:
+{
+
+	<Y: "&&"> {System.out.println("Y -> "+ image);}
+| 	<MenorQue: "<"> {System.out.println("Menor que -> "+ image);}
+| 	<Suma: "+"> {System.out.println("Suma -> "+ image);}
+| 	<Resta: "-"> {System.out.println("Resta -> "+ image);}
+| 	<Multiplicacion: "*"> {System.out.println("Multiplicacion -> "+ image);}
+| 	<Coma : ","> {System.out.println("Coma -> "+ image);}
+| 	<Punto: "."> {System.out.println("Punto -> "+ image);}
+| 	<Longitud: "length"> {System.out.println("Longitud -> "+ image);}
+| 	<Numero: (["0"-"9"])+> {System.out.println("Numero -> "+ image);}
+| 	<Verdadero: "true"> {System.out.println("Verdadero -> "+ image);}
+| 	<Falso: "false"> {System.out.println("Falso ->"+ image);}
+| 	<Este: "this"> {System.out.println("Este ->"+ image);}
+| 	<Nuevo: "new"> {System.out.println("Nuevo -> "+ image);}
+| 	<Negacion: "!"> {System.out.println("Negacion ->"+ image);}
+
+}
+//Identificador
+TOKEN:
+{
+
+	<Identificador: ["a"-"z", "A"-"Z"] (["a"-"z", "A"-"Z", "0"-"9", "_"])*> {System.out.println("Identificador -> "+ image);}
+
+}
+//Omitir
+SKIP:
+{
+
+	" " | "\r" | "\n" | "\t" | "//" | "/*" | "*/"
+
+}
+
+void Clase():
+{ }
+{
+
+	<Clase>Identificador()<LlaveIzquierda>(Declaracion())* (Metodo())* <LlaveDerecha><EOF>
+
+}
+
+void Declaracion():
+{ }
+{
+
+	Tipo()Identificador()<PuntoComa>
+
+}
+
+void Tipo():
+{ }
+{
+
+    <EnteroArreglo> | <Booleano> | <Entero> | Identificador()
+
+}
+
+void Metodo():
+{ }
+{
+
+	<Publico>Tipo()Identificador()<ParentesisIzquierdo>(Tipo()Identificador() (<Coma>Tipo()Identificador())*)?<ParentesisDerecho><LlaveIzquierda> (Declaracion())* (Sentencia())*<Regresar>Expresion()<PuntoComa><LlaveDerecha>
+
+}
+
+void Sentencia():
+{ }
+{
+
+	<LlaveIzquierda>(Sentencia())*<LlaveDerecha> | <Si><ParentesisIzquierdo>Expresion()<ParentesisDerecho>Sentencia()<Entonces>Sentencia() | <Mientras><ParentesisIzquierdo>Expresion()<ParentesisDerecho>Sentencia() | <Imprimir><ParentesisIzquierdo>Expresion()<ParentesisDerecho><PuntoComa> | Identificador()<Asignacion>Expresion()<PuntoComa> |(Tipo())? Identificador()<CorcheteIzquierdo>Expresion()<CorcheteDerecho><Asignacion>Expresion()<PuntoComa>
+
+}
+
+void Expresion():
+{ }
+{
+
+
+	(<Numero>|Identificador())(<Y> | <MenorQue> | <Suma> | <Resta> | <Multiplicacion>)Expresion()
+|   Identificador()<CorcheteIzquierdo>Expresion()<CorcheteDerecho>
+|   Identificador()<Punto><Longitud>
+|   <Este><Punto>Identificador()<ParentesisIzquierdo>(Expresion()(<Coma>Expresion())*)?<ParentesisDerecho>
+|   <Numero>
+|   <Verdadero>
+|   <Falso>
+|   Identificador()
+|   <Este>
+|   <Nuevo><Entero><CorcheteIzquierdo>Expresion()<CorcheteDerecho>
+|   <Nuevo>Identificador()<ParentesisIzquierdo><ParentesisDerecho>
+|   <Negacion>(<Verdadero>|<Falso>)
+|   <ParentesisIzquierdo>Expresion()<ParentesisDerecho>
+
+}
+
+void Identificador():
+{ }
+{
+
+	<Identificador>
+
+}
