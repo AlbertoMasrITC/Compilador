@@ -1,9 +1,14 @@
 class Fac
-{
+ {
+
+    int c = 2;
+
     public void ComputeFac()
     {
 
-        int a = 1;
+        int a = 1 + 2;
+
+        boolean b = true;
 
     }
 

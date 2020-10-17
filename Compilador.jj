@@ -126,7 +126,7 @@ void Declaracion():
 { }
 {
 
-	Tipo()Identificador()(<Asignacion>Expresion())?<PuntoComa>
+	Tipo()Identificador()<Asignacion>Expresion()<PuntoComa> | (Tipo())?Identificador()<Asignacion>Expresion()<PuntoComa> | Tipo()Identificador()(<Asignacion>Expresion())?<PuntoComa>
 
 }
 
