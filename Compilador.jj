@@ -10,21 +10,22 @@ class Compilador
 	public static void main(String [] Args) throws ParseException
 	{
 
-		try
-		{
-		
-			Compilador c = new Compilador(System.in);
-			c.Clase();
-			System.out.println("Exito.");
-		
-		}
-		catch(ParseException e)
-		{
-		
-			System.out.println(e.getMessage());
-			System.out.println("Error.");
 
-		}
+			try
+			{
+			
+				Compilador c = new Compilador(System.in);
+				c.Clase();
+				System.out.println("Exito.");
+			
+			}
+			catch(ParseException e)
+			{
+			
+				System.out.println(e.getMessage());
+				System.out.println("Error.");
+	
+			}			
 	  
 	}
   
@@ -34,75 +35,75 @@ PARSER_END(Compilador)
 TOKEN:
 {
 
-	<CorcheteIzquierdo: "["> {System.out.println("CorcheteIzquierdo -> "+ image);}
-| 	<CorcheteDerecho: "]"> {System.out.println("CorcheteDerecho -> "+ image);}
-| 	<ParentesisIzquierdo: "("> {System.out.println("ParentesisIzquierdo -> "+image);}
-| 	<ParentesisDerecho: ")"> {System.out.println("ParentesisDerecho -> "+image);}
-| 	<LlaveIzquierda: "{"> {System.out.println("LlaveIzquierda -> "+ image);}
-| 	<LlaveDerecha: "}"> {System.out.println("LlaveDerecha -> "+ image);}
-| 	<PuntoComa: ";"> {System.out.println("Punto y coma -> "+ image);}
+	<CorcheteIzquierdo: "["> {System.out.println("CorcheteIzquierdo -> "+ image);} //1
+| 	<CorcheteDerecho: "]"> {System.out.println("CorcheteDerecho -> "+ image);} //2
+| 	<ParentesisIzquierdo: "("> {System.out.println("ParentesisIzquierdo -> "+image);} //3
+| 	<ParentesisDerecho: ")"> {System.out.println("ParentesisDerecho -> "+image);} //4
+| 	<LlaveIzquierda: "{"> {System.out.println("LlaveIzquierda -> "+ image);} //5
+| 	<LlaveDerecha: "}"> {System.out.println("LlaveDerecha -> "+ image);} //6
+| 	<PuntoComa: ";"> {System.out.println("Punto y coma -> "+ image);} //7
 
 }
 //Declaración de clase
 TOKEN:
 {
 
-	<Clase: "class"> {System.out.println("\nClase -> " + image);}
+	<Clase: "class"> {System.out.println("\nClase -> " + image);} //8
 
 }
 //Declaración del método
 TOKEN:
 {
 
-	<Publico: "public"> {System.out.println("Publico -> "+ image); }
-| 	<Regresar: "return"> {System.out.println("Regresar -> "+ image);}
+	<Publico: "public"> {System.out.println("Publico -> "+ image); } //9
+| 	<Regresar: "return"> {System.out.println("Regresar -> "+ image);} //10
 
 }
 //Tipo de dato
 TOKEN:
 {
 
-	<EnteroArreglo: "int []"> {System.out.println("EnteroArreglo -> "+ image);}
-| 	<Entero: "int"> {System.out.println("Entero -> "+ image);}
-| 	<Booleano: "boolean"> {System.out.println("Booleano -> "+ image);}
+ 	<Entero: "int"> {System.out.println("Entero -> "+ image);} //12
+| 	<Booleano: "boolean"> {System.out.println("Booleano -> "+ image);} //13
+|	<Void: "void"> {System.out.println("Booleano -> "+ image);} //14
 
 }
 //Sentencia
 TOKEN:
 {
 
-	<Si: "if"> {System.out.println("Si -> "+ image);}
-| 	<Entonces: "else"> {System.out.println("Entonces -> "+ image);}
-| 	<Mientras: "while"> {System.out.println("Mientras -> "+ image);}
-| 	<Imprimir: "System.out.println"> {System.out.println("Imprimir -> "+ image);}
-| 	<Asignacion: "="> {System.out.println("Asignacion -> "+ image);}
+	<Si: "if"> {System.out.println("Si -> "+ image);} //15
+| 	<Entonces: "else"> {System.out.println("Entonces -> "+ image);} //16
+| 	<Mientras: "while"> {System.out.println("Mientras -> "+ image);} //17
+| 	<Imprimir: "System.out.println"> {System.out.println("Imprimir -> "+ image);} //18
+| 	<Asignacion: "="> {System.out.println("Asignacion -> "+ image);} //19
 
 }
 //Expresión
 TOKEN:
 {
 
-	<Y: "&&"> {System.out.println("Y -> "+ image);}
-| 	<MenorQue: "<"> {System.out.println("Menor que -> "+ image);}
-| 	<Suma: "+"> {System.out.println("Suma -> "+ image);}
-| 	<Resta: "-"> {System.out.println("Resta -> "+ image);}
-| 	<Multiplicacion: "*"> {System.out.println("Multiplicacion -> "+ image);}
-| 	<Coma : ","> {System.out.println("Coma -> "+ image);}
-| 	<Punto: "."> {System.out.println("Punto -> "+ image);}
-| 	<Longitud: "length"> {System.out.println("Longitud -> "+ image);}
-| 	<Numero: (["0"-"9"])+> {System.out.println("Numero -> "+ image);}
-| 	<Verdadero: "true"> {System.out.println("Verdadero -> "+ image);}
-| 	<Falso: "false"> {System.out.println("Falso ->"+ image);}
-| 	<Este: "this"> {System.out.println("Este ->"+ image);}
-| 	<Nuevo: "new"> {System.out.println("Nuevo -> "+ image);}
-| 	<Negacion: "!"> {System.out.println("Negacion ->"+ image);}
+	<Y: "&&"> {System.out.println("Y -> "+ image);} //20
+| 	<MenorQue: "<"> {System.out.println("Menor que -> "+ image);} //21
+| 	<Suma: "+"> {System.out.println("Suma -> "+ image);} //22
+| 	<Resta: "-"> {System.out.println("Resta -> "+ image);} //23
+| 	<Multiplicacion: "*"> {System.out.println("Multiplicacion -> "+ image);} //24
+| 	<Coma : ","> {System.out.println("Coma -> "+ image);} //25
+| 	<Punto: "."> {System.out.println("Punto -> "+ image);} //26
+| 	<Longitud: "length"> {System.out.println("Longitud -> "+ image);} //27
+| 	<Numero: (["0"-"9"])+> {System.out.println("Numero -> "+ image);} //28
+| 	<Verdadero: "true"> {System.out.println("Verdadero -> "+ image);} //29
+| 	<Falso: "false"> {System.out.println("Falso ->"+ image);} //30
+| 	<Este: "this"> {System.out.println("Este ->"+ image);} //31
+| 	<Nuevo: "new"> {System.out.println("Nuevo -> "+ image);} //32
+| 	<Negacion: "!"> {System.out.println("Negacion ->"+ image);} //33
 
 }
 //Identificador
 TOKEN:
 {
 
-	<Identificador: ["a"-"z", "A"-"Z"] (["a"-"z", "A"-"Z", "0"-"9", "_"])*> {System.out.println("Identificador -> "+ image);}
+	<Identificador: ["a"-"z", "A"-"Z"] (["a"-"z", "A"-"Z", "0"-"9", "_"])*> {System.out.println("Identificador -> "+ image);} //34
 
 }
 //Omitir
@@ -125,7 +126,7 @@ void Declaracion():
 { }
 {
 
-	Tipo()Identificador()<PuntoComa>
+	Tipo()Identificador()(<Asignacion>Expresion())?<PuntoComa>
 
 }
 
@@ -133,7 +134,7 @@ void Tipo():
 { }
 {
 
-    <EnteroArreglo> | <Booleano> | <Entero> | Identificador()
+    <Booleano> | <Entero> | Identificador() | <Void>
 
 }
 
@@ -141,7 +142,7 @@ void Metodo():
 { }
 {
 
-	<Publico>Tipo()Identificador()<ParentesisIzquierdo>(Tipo()Identificador() (<Coma>Tipo()Identificador())*)?<ParentesisDerecho><LlaveIzquierda> (Declaracion())* (Sentencia())*<Regresar>Expresion()<PuntoComa><LlaveDerecha>
+	<Publico>Tipo()Identificador()<ParentesisIzquierdo>(Tipo()Identificador() (<Coma>Tipo()Identificador())*)?<ParentesisDerecho><LlaveIzquierda> (Declaracion())* (Sentencia())*(<Regresar>Expresion()<PuntoComa>)?<LlaveDerecha>
 
 }
 
@@ -159,6 +160,7 @@ void Expresion():
 
 
 	(<Numero>|Identificador())(<Y> | <MenorQue> | <Suma> | <Resta> | <Multiplicacion>)Expresion()
+|   Declaracion()
 |   Identificador()<CorcheteIzquierdo>Expresion()<CorcheteDerecho>
 |   Identificador()<Punto><Longitud>
 |   <Este><Punto>Identificador()<ParentesisIzquierdo>(Expresion()(<Coma>Expresion())*)?<ParentesisDerecho>
@@ -171,6 +173,7 @@ void Expresion():
 |   <Nuevo>Identificador()<ParentesisIzquierdo><ParentesisDerecho>
 |   <Negacion>(<Verdadero>|<Falso>)
 |   <ParentesisIzquierdo>Expresion()<ParentesisDerecho>
+
 
 }
 
