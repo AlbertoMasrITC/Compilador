@@ -1,6 +1,6 @@
 options
 {
-  	LOOKAHEAD = 2;
+  	LOOKAHEAD = 5;
   	FORCE_LA_CHECK = true;
 }
 PARSER_BEGIN(Compilador)
@@ -126,7 +126,7 @@ void Declaracion():
 { }
 {
 
-	Tipo()Identificador()<Asignacion>Expresion()<PuntoComa> | (Tipo())?Identificador()<Asignacion>Expresion()<PuntoComa> | Tipo()Identificador()(<Asignacion>Expresion())?<PuntoComa>
+	(Tipo())?Identificador()<Asignacion>Expresion()<PuntoComa> | Tipo()Identificador()(<Asignacion>Expresion())?<PuntoComa> | Identificador()<Asignacion><PuntoComa>
 
 }
 
@@ -150,7 +150,13 @@ void Sentencia():
 { }
 {
 
-	<LlaveIzquierda>(Sentencia())*<LlaveDerecha> | <Si><ParentesisIzquierdo>Expresion()<ParentesisDerecho>Sentencia()<Entonces>Sentencia() | <Mientras><ParentesisIzquierdo>Expresion()<ParentesisDerecho>Sentencia() | <Imprimir><ParentesisIzquierdo>Expresion()<ParentesisDerecho><PuntoComa> | Identificador()<Asignacion>Expresion()<PuntoComa> |(Tipo())? Identificador()<CorcheteIzquierdo>Expresion()<CorcheteDerecho><Asignacion>Expresion()<PuntoComa>
+	<LlaveIzquierda>(Sentencia())*<LlaveDerecha>
+| <Si><ParentesisIzquierdo>(Expresion())*<ParentesisDerecho>(Sentencia())*<Entonces>Sentencia()
+| <Mientras><ParentesisIzquierdo>Expresion()<ParentesisDerecho>Sentencia()
+| <Imprimir><ParentesisIzquierdo>Expresion()<ParentesisDerecho><PuntoComa>
+| (Tipo())?Identificador()<Asignacion>Expresion()<PuntoComa>
+| Tipo()Identificador()(<Asignacion>Expresion())?<PuntoComa>
+| Identificador()<Asignacion><PuntoComa>
 
 }
 
@@ -161,7 +167,6 @@ void Expresion():
 
 	(<Numero>|Identificador())(<Y> | <MenorQue> | <Suma> | <Resta> | <Multiplicacion>)Expresion()
 |   Declaracion()
-|   Identificador()<CorcheteIzquierdo>Expresion()<CorcheteDerecho>
 |   Identificador()<Punto><Longitud>
 |   <Este><Punto>Identificador()<ParentesisIzquierdo>(Expresion()(<Coma>Expresion())*)?<ParentesisDerecho>
 |   <Numero>

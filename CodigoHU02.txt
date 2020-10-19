@@ -1,0 +1,9 @@
+class Fac{
+    int a = 10;
+    int x = false;
+    public void ComputeFac()    {
+      boolean b = true;
+      boolean c = 1;
+      int d = 30;
+      }
+}

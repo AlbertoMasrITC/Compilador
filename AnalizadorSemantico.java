@@ -1,3 +1,5 @@
+package Prueba;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -13,13 +15,14 @@ public class AnalizadorSemantico
 	// Crea ArrayList de los diferentes datos a llenar en la tabla de simbolos
 	ArrayList<String> tipoDato = new ArrayList<String>();
 	ArrayList<String> variable = new ArrayList<String>();
-	ArrayList<String> posicion = new ArrayList<String>();
 	ArrayList<String> valor = new ArrayList<String>();
+	ArrayList<Integer> posicion = new ArrayList<Integer>();
 	ArrayList<String> alcance = new ArrayList<String>();
 	
 	// Crea ArrayList para almacenar los errores
 	ArrayList <String> listaErroresSemanticos = new ArrayList<String>();
 	
+	// Variable con copia de código para encontrar posiciones
 	String codigoGlobal = "";
 	
 	// Constructor que invoca cada uno de los métodos del programa
@@ -30,14 +33,26 @@ public class AnalizadorSemantico
 		codigoGlobal = codigo;
 		recorrerCodigo(codigo);		
 		asignarCodigo(codigo);
+		TipoDatosVariablesValor();
+		imprimirTabla();
 		
-		/*for(int i = 0; i < codigo.length(); i++)
-			System.out.println(codigo.charAt(i));*/
+		System.out.println();
 		
-		for(int i = 0; i < datos.size(); i++)
-			System.out.println(datos.get(i));
+		for(String s: listaErroresSemanticos)
+			System.err.println(s);
 		
-		llenadoTipoDatos();
+		System.out.println();
+		System.out.println();
+		
+		int c = 0;
+		
+		for(int i = 0; i < linea.size(); i++)
+		{
+			
+			c++;
+			System.out.println(c+ ".- "+ linea.get(i));
+			
+		}
 		
 	}
 	
@@ -80,7 +95,7 @@ public class AnalizadorSemantico
 		
 	}
 	
-	// Método para recorrer el código, tomando como bandera algunos carácteres
+	// Método para recorrer el código, tomando como bandera algunos carácteres y almacenar las líneas de código
 	public void recorrerCodigo(String codigo)
 	{
 		
@@ -103,7 +118,7 @@ public class AnalizadorSemantico
 		
 	}
 	
-	// Método para asignar el código sin las banderas anteriores a una pila
+	// Método para asignar las variables/datos con las banderas anteriores y otras más a una pila
 	public void asignarCodigo(String codigo)
 	{
 		
@@ -169,187 +184,343 @@ public class AnalizadorSemantico
 		
 	}
 	
-	// Método para el llenado de la tabla de simbolos llenando los distintos ArrayList
-	public void crearTablaSimbolos()
-	{		
-		
-		
-		
-	}
-	
-	public void llenadoTipoDatos()
+	// Método para llenar los ArrayList de tipo de dato, variable, valor, posición y alcance
+	public void TipoDatosVariablesValor()
 	{
 		
-		// Cíclo para el llenado de Tipo de datos
-				for(int i = 0; i < datos.size(); i++)
-				{
+		// Cíclo para el llenado de Tipo de datos, variables, valores, posiciones y alcances
+		for(int i = 0; i < datos.size(); i++)
+		{
 					
-					String anterior = ""; // Apunta atrás del tipo de dato
-					String dato = datos.get(i); // Apunta al tipo de dato
-					String siguiente = ""; // Apunta a la variable
-					String siguiente2 = ""; // Apunta a la asignación
-					String siguiente3 = ""; // Apunta al valor (En caso de que exista)
+			String anterior = ""; // Apunta atrás del tipo de dato
+			String dato = datos.get(i); // Apunta al tipo de dato
+			String siguiente = ""; // Apunta a la variable
+			String siguiente2 = ""; // Apunta a la asignación
+			String siguiente3 = ""; // Apunta al valor (En caso de que exista)
 					
-					if(i != 0)
-						anterior = datos.get(i - 1);
+			if(i != 0)
+				anterior = datos.get(i - 1);
 					
-					if(i < datos.size() - 1)
-						siguiente = datos.get(i + 1);
+			if(i < datos.size() - 1)
+				siguiente = datos.get(i + 1);
 					
-					if(i < datos.size() - 2)
-						siguiente2 = datos.get(i + 2);
+			if(i < datos.size() - 2)
+				siguiente2 = datos.get(i + 2);
 					
-					if(i < datos.size() - 3)
-						siguiente3 = datos.get(i + 3);
+			if(i < datos.size() - 3)
+				siguiente3 = datos.get(i + 3);
 					
-					if(!anterior.equals("public")) // Si antes del tipo de dato hay diferencia a publico
-					{
+			if(!anterior.equals("public")) // Si antes del tipo de dato hay diferencia a publico
+			{
 						
-						if(siguiente2.equals("=") && (dato.equals("int") || dato.equals("boolean"))) // Si hay asignacion después de la variable y tipo de dato es entero o booleano
+				if(siguiente2.equals("=") && (dato.equals("int") || dato.equals("boolean"))) // Si hay asignacion después de la variable y tipo de dato es entero o booleano
+				{
+
+					if(!existe(siguiente)) // Si la variable no existe
+					{
+									
+						int j = i + 3;
+						String c = "";
+									
+						do
 						{
-							
-							if(!existe(siguiente))
-							{
-								
-								tipoDato.add(dato);
-								variable.add(siguiente);
-								
-								int j = i + 3;
-								String c = "";
-								
-								do
-								{
-									
-									siguiente3 = datos.get(j);
-									
-									if(!siguiente3.equals(";"))
-									{
 										
-										c += siguiente3;
-										j++;
+							siguiente3 = datos.get(j);
 										
-									}
-									
-								}while(!siguiente3.equals(";"));
-								
-								valor.add(c);
-								
-								String al = alcance(siguiente);
-								
-								alcance.add(al);
-								
-							}
-							else
+							if(!siguiente3.equals(";"))
 							{
-								
-								listaErroresSemanticos.add("HU03. La variable "+ siguiente + "está tratando de ser usada y no existe");
-								
+											
+								c += siguiente3;
+								j++;
+											
 							}
-							
-							
-							
+										
+						}while(!siguiente3.equals(";"));
+						
+						tipoDato.add(dato);
+						variable.add(siguiente);
+															
+						String tipo = validar(siguiente, c); // Invoca al método validar para saber si el dato es el correcto HU02
+						String tipo2 = "";
+						
+						int indice = validarIndice(siguiente, c); // Invoca al método validar para saber en donde se encuentra el indice de la asignacion incorrecta HU02
+									
+						int p = posicion(siguiente); // Invoca al método posición para obtener la posición  de la variable
+						posicion.add(p);
+						
+						String al = alcance(siguiente);	// Invoca al método alcance para saber el alcance de la variable		
+						alcance.add(al);
+									
+						if(tipo.equals("true")) // Valida si el tipo es booleano
+						{
+										
+							valor.add(c);
+										
 						}
 						else
-							if(siguiente2.equals("=") && (!dato.equals("int") || !dato.equals("boolean"))) // Si hay asignacion después de la variable y tipo de dato no es entero ni booleano 
+							if(tipo.equals("false")) // Valida si el tipo es booleano
 							{
-								
-								if(!existe(siguiente))
+											
+								valor.add(c);
+											
+							}
+							else
+								if(!tipo.equals("null")) // Valida si el tipo es entero
 								{
-									
-									tipoDato.add(null);
-									variable.add(siguiente);
-									
-									int j = i + 3;
-									String c = "";
-									
-									do
-									{
-										
-										siguiente3 = datos.get(j);
-										
-										if(!siguiente3.equals(";"))
-										{
-											
-											c += siguiente3;
-											j++;
-											
-										}
-										
-									}while(!siguiente3.equals(";"));
-									
+												
 									valor.add(c);
-									
-									String al = alcance(siguiente);
-									
-									alcance.add(al);
-									
+											
 								}
 								else
 								{
+												
+									if(dato.equals("int")) // Si el dato es entero se le asigna booleano a tipo2 para llenar la HU02
+										tipo2 = "boolean";
+									else
+										tipo2 = "int"; // Si el dato es booleano se le asigna entero a tipo2 para llenar la HU02
 									
-									listaErroresSemanticos.add("HU03. La variable "+ siguiente + "está tratando de ser usada y no existe");
+									valor.add("null"); // Se agrega nulo a valor debido a que no es del tipo de dato la asignación que se quiso hacer
+									
+									if(indice >= 0)
+									{
+										
+										tipoDato.remove(indice);
+										variable.remove(indice);
+										valor.remove(indice);
+										posicion.remove(indice);
+										alcance.remove(indice);
+									}
+												
+									listaErroresSemanticos.add("HU02. No se le puede asignar a la variable "+ siguiente + " el tipo de dato "+ tipo2 + " debido a que es "+  dato +" en la posición "+ p +".");
+												
+								}
+									
+					}
+					else // Si la variable existe
+					{
+									
+						int p = posicion(siguiente); // Obtiene la posición de la variable que se está tratando de usar por segunda vez
+						listaErroresSemanticos.add("HU04. La variable "+ siguiente + " está tratando de ser usada en la línea "+ posicionSegunda(siguiente) +" y ya fue declarada en "+ p +".");
+									
+					}
+								
+				}
+				else
+					if(siguiente2.equals("=") && (!dato.equals("int") || !dato.equals("boolean"))) // Si hay asignacion después de la variable y tipo de dato no es entero ni booleano 
+					{
+								
+						if(existe(siguiente))
+						{
+										
+							String tipo = tipoDato.get(i);
+										
+						//	if(tipo.equals("null"))
+											
+								tipoDato.add(null);
+								variable.add(siguiente);
+										
+								int j = i + 3;
+								String c = "";
+										
+								do
+								{
+											
+									siguiente3 = datos.get(j);
+										
+									if(!siguiente3.equals(";"))
+									{
+												
+										c += siguiente3;
+										j++;
+												
+									}
+											
+								}while(!siguiente3.equals(";"));
+										
+								String t = validar(siguiente, c);
+								String tipo2 = "";
+										
+								int p = posicion(siguiente);			
+								posicion.add(p);
+										
+								if(t.equals("true"))
+								{
+											
+									valor.add(c);
+											
+								}
+								else
+									if(t.equals("false"))
+									{
+												
+										valor.add(c);
+											
+									}
+									else
+										if(!t.equals("null"))
+										{
+													
+											valor.add(c);
+													
+										}
+										else
+											{
+													
+												if(dato.equals("int"))
+													tipo2 = "boolean";
+												else
+													tipo2 = "int";
+													
+												valor.add("null");
+												listaErroresSemanticos.add("HU02. No se le puede asignar a la variable "+ siguiente + " el tipo de dato "+ tipo2 + " debido a que es "+  dato +" en la posición "+ p +".");
+													
+											}
+										
+									String al = alcance(siguiente);
+									alcance.add(al);
+										
+							}
+							else
+								{
+										
+									int p = posicion(siguiente);
+									listaErroresSemanticos.add("HU04. La variable "+ siguiente + " está tratando de ser usada en la línea "+ posicionSegunda(siguiente) +" y ya fue declarada en "+ p +".");
 									
 								}
 								
-								
+					}
+					else
+						if(!siguiente2.equals("=") && (dato.equals("int") || dato.equals("boolean"))) // Si no hay asignacion después de la variable y tipo de dato es entero o booleano
+						{
+					
+							if(!existe(siguiente)) // Si variable no existe
+							{
+										
+								tipoDato.add(dato);
+								variable.add(siguiente);
+								valor.add(null);
+										
+								String al = alcance(siguiente); // Invoca al método alcance para obtener el alcance		
+								alcance.add(al);
+																				
+								int p = posicion(siguiente); // Invoca al método posicion para obtener la posición			
+								posicion.add(p);
+										
 							}
 							else
-								if(!siguiente2.equals("=") && (dato.equals("int") || dato.equals("boolean"))) // Si no hay asignacion después de la variable y tipo de dato es entero o booleano
+								{
+										
+									int p = posicion(siguiente); // Invoca al método posicion para obtener la posición de la variable donde quiere ser usada por segunda vez
+									listaErroresSemanticos.add("HU04. La variable "+ siguiente + " está tratando de ser usada en la línea "+ posicionSegunda(siguiente) +" y ya fue declarada en "+ p +".");
+										
+								}
 								
-									if(!existe(siguiente))
-									{
-										
-										tipoDato.add(null);
-										variable.add(siguiente);
-										valor.add(null);
-										
-										String al = alcance(siguiente);
-										
-										alcance.add(al);
-										
-									}
-									else
-									{
-										
-										listaErroresSemanticos.add("HU03. La variable "+ siguiente + "está tratando de ser usada y no existe");
-										
-									}
 								
-						}
-					
-						//System.out.print("Anterior: "+ anterior +"\n"+ "Actual: "+ dato+"\n"+ "Siguiente: "+ siguiente +"\n"+ "Siguiente2: "+ siguiente2 +"\n");
+						 }
 						
-					}
+			}
+											
+		}
 				
-				for(String s: tipoDato)
-					System.out.println(s);
-				
-				for(String s: variable)
-					System.out.println(s);
-				
-				for(String s: valor)
-					System.out.println(s);
-				
-				for(String s: alcance)
-					System.out.println(s);
 	}
 	
-	/*public void llenadoPosiciones()
+	public int posicion(String codigo)
 	{
 		
 		// Cíclo para el llenado de la posición
+		String posCadena = "";
+		int posEntero = 0;
+		boolean yaExiste = false;
 		
+		for (int i = 0; i < linea.size(); i++) 
+		{
+			
+			posCadena = linea.get(i);
+			
+			if(posCadena.contains(" "+ codigo+ " "))
+			{
+								
+				if(yaExiste == false)
+				{
+					
+					posEntero = i + 1;
+					yaExiste = true;
+					
+				}
+
+				/*if(yaExiste == false)
+					yaExiste = true;
+				
+				if(yaExiste == true)
+					posOtras = i + 1;*/
+				
+			}
+			
+		}
 		
-	}*/
+		return posEntero;
+		
+	}
+	
+	public int posicionSegunda(String codigo)
+	{
+		
+		// Cíclo para el llenado de la posición
+		String posCadena = "";
+		int posPrimera = 0;
+		boolean yaExiste = false;
+		boolean yaExiste2 = false;
+		int veces = 0;
+				
+		for (int i = 0; i < linea.size(); i++) 
+		{
+					
+			posCadena = linea.get(i);
+					
+			if(posCadena.contains(" "+ codigo + " "))
+			{
+										
+				if(yaExiste == false)
+				{
+							
+					yaExiste = true;
+					veces++;
+							
+				}
+
+				if(yaExiste == true && veces > 0)
+				{
+						
+					posPrimera = i + 1;
+					yaExiste2 = true;
+						
+				}						
+						
+			}
+				
+	}
+		
+	if(yaExiste2 == true)
+	{
+			
+		return posPrimera;
+			
+	}
+	else
+	{
+			
+		return 0;
+			
+	}
+		
+	}
 	
 	public String alcance(String cadena)
 	{
 		
 		// Ciclo para el llenado del alcance
-		
 		String al = "";
 		boolean local = false;
-		boolean global = false;
 		
 		for(int i = 0; i < datos.size(); i++)
 		{
@@ -377,62 +548,6 @@ public class AnalizadorSemantico
 		
 	}
 	
-	/*public String posicion(String codigo)
-	{
-		
-		String parrafo = "";
-        boolean esVariable = false;
-        int inicioEntero = 0;
-        boolean inicioBooleano = true;
-        boolean anterior = false;
-       
-		for (int i = 0; i < codigo.length(); i++) 
-		{
-			
-			if (codigo.charAt(i) == '{' || codigo.charAt(i) == '}' || codigo.charAt(i) == ';' || codigo.charAt(i) == ' ' || codigo.charAt(i) == '(' || codigo.charAt(i) == ')')
-			{
-				
-					if(anterior == false)
-					{
-						
-						parrafo = codigo.substring(inicioEntero, i);
-						datos.add(parrafo);
-						parrafo = "";
-						
-						esVariable = false;	
-						inicioBooleano = true;
-						
-					}
-
-					anterior = true;
-				
-			} 
-			else
-			{
-				
-				esVariable = true;
-				
-			}
-			
-			if(esVariable == true)
-			{
-				
-				if(inicioBooleano == true)
-				{
-					
-					inicioEntero = i;
-					
-				}
-				
-				inicioBooleano = false;
-				anterior = false;
-				
-			}
-			
-		}
-		
-	}*/
-	
 	public boolean existe(String cadena)
 	{
 		
@@ -455,7 +570,7 @@ public class AnalizadorSemantico
 		
 	}
 	
-	public boolean inicializada(String cadena)
+	/*public boolean inicializada(String cadena)
 	{
 		
 		boolean inicializada = false;
@@ -465,7 +580,7 @@ public class AnalizadorSemantico
 			
 			String siguiente = "";
 			
-			if(i != datos.size())
+			if(i != datos.size() - 1)
 				siguiente = datos.get(i + 1);
 			
 			if(existe(cadena) == true)
@@ -483,124 +598,229 @@ public class AnalizadorSemantico
 		else
 			return false;
 		
+	}*/
+	
+	// Método para el llenado de la tabla de simbolos llenando los distintos ArrayList
+	public void imprimirTabla()
+	{		
+			
+			// Objeto TablaSimbolos
+			System.out.println("------------------------------------------------------------------------------");
+			System.out.println("                             Tabla de simbolos                                    ");
+			System.out.println("------------------------------------------------------------------------------");
+			System.out.println("  Tipo  |     Variable    |     Valor     |   Posición   |      Alcance      ");
+			System.out.println("------------------------------------------------------------------------------");
+			for(int i = 0; i < variable.size(); i++)
+			{
+				
+				System.out.format("%s\t\t %s\t\t %s \t\t %-10d \t %s", tipoDato.get(i), variable.get(i), valor.get(i), posicion.get(i), alcance.get(i));
+				System.out.println();
+				
+			}
+			
+			//TablaSimbolos t = new TablaSimbolos(tipoDato.get(i), variable.get(i), posicion.get(i), posicion.get(i), valor.get(i), alcance.get(i));
+						
+			/*for(String s: tipoDato)
+				System.out.print(s);
+			
+			for(String s: variable)
+				System.out.print("\t\t"+ s);
+			
+			for(int i: posicion)
+				System.out.print("\t\t\t\t"+ i);
+			
+			for(Object o: valor)
+				System.out.print("\t\t\t\t\t\t"+ o);
+			
+			for(String s: alcance)
+				System.out.print("\t\t\t\t\t\t\t\t"+ s);*/
+				
 	}
 	
-}
-
-/*public void llenadoVariables()
-{
-	
-	//Cíclo para llenar las variables		
-			for(int i = 0; i < datos.size(); i++)
-			{
-				
-				String anterior = "";
-				String anterior2 = "";
-				
-				if(i != 0)
-					anterior = datos.get(i - 1);
-				
-				if(i != 0 && i != 1)
-					anterior2 = datos.get(i - 2);
-				
-				String dato = datos.get(i);
-				
-				if(!anterior2.equals("public"))
-				{
-						
-						if(anterior.equals("int") || anterior.equals("boolean") )
-						{
-								
-							if(!existe(dato))
-							{
-								
-								variable.add(dato);
-								System.out.print("No existe");
-								//llenadoValores(dato);
-								//llenadoPosicion(dato);
-								//llenadoAlcance(dato);
-								
-							}
-							
-						}
-					
-				}
-			
-				//System.out.print("Anterior2: " + anterior2 + "\n" + "Anterior: "+ anterior + "\n" +"Actual: "+ dato +"\n");
-				
-			}
-			
-		for(String s: variable)
-			System.out.println(s);
-	
-}*/
-
-/*public void llenadoValores(String cadena)
-{
-	
-	// Ciclo para el llenado del valor	
-	
-	boolean esValor = false;
-	boolean primeraVez = true;
-	String valors = "";
-	
-	for(int i = 0; i < datos.size(); i++)
+	public String validar(String cadena, String valor)
 	{
-	
-		String dato = datos.get(i);
 		
-		String anterior = "";
-		String siguiente = "";
+		int contador = 0;
 		
-		if(i != 0)
-			anterior = datos.get(i - 1);
-		
-		if(i < datos.size() - 1)
-			siguiente = datos.get(i + 1);
-		
-		if(anterior.equals(cadena) || esValor == true)
+		for(int i = 0; i < variable.size(); i++)
 		{
 			
-			if(dato.equals("=") || esValor == true)
-			{
-				
-				esValor = true;
-				
-				if(primeraVez == true)
-				{
-					
-					primeraVez = false;
-					
-				}
-				else										
-					if(siguiente.equals("/") || siguiente.equals("*") || siguiente.equals("-") || siguiente.equals("+"))
-					{
-						
-						valors += dato;
-
-						
-					}
-					else
-						if(anterior.equals("/") || anterior.equals("*") || anterior.equals("-") || anterior.equals("+") || anterior.equals("="))
-						{
-							
-							valors += dato;
-							valor.add(valors);
-							valors = "";
-							esValor = false;
-							primeraVez = true;
-							
-						}
-				
-			}
+			String s = variable.get(i);
+			
+			if(s.equals(cadena))
+				contador = i;
 			
 		}
 		
-		//System.out.print("Anterior: "+ anterior +"\n"+ "Actual: "+ dato +"\n"+ "Siguiente: "+ siguiente +"\n");
-	
+		String tipo = tipoDato.get(contador);
+		
+		switch(tipo)
+		{
+			
+		case "boolean":
+			if(valor.equals("true"))
+			{
+				
+				return "true";
+				
+			}
+			else
+				if(valor.equals("false"))
+				{
+					
+					return "false";
+					
+				}
+				else
+				{
+					
+					return "null";
+					
+				}
+		case "int":
+			try 
+			{
+				
+				Integer.parseInt(valor);
+				return valor;
+				
+			} 
+			catch (Exception e)
+			{
+				
+				return "null";
+			
+			}
+		default:
+			return "null";
+			
+		}
+		
 	}
 	
-	for(String s: valor)
-		System.out.println(s);
+	public int validarIndice(String cadena, String valor)
+	{
+		
+		int contador = 0;
+		
+		for(int i = 0; i < variable.size(); i++)
+		{
+			
+			String s = variable.get(i);
+			
+			if(s.equals(cadena))
+				contador = i;
+			
+		}
+		
+		String tipo = tipoDato.get(contador);
+		
+		switch(tipo)
+		{
+			
+		case "boolean":
+			if(valor.equals("true"))
+			{
 				
-}*/
+				return -1;
+				
+			}
+			else
+				if(valor.equals("false"))
+				{
+					
+					return -1;
+					
+				}
+				else
+				{
+					
+					return contador;
+					
+				}
+		case "int":
+			try 
+			{
+				
+				Integer.parseInt(valor);
+				return -1;
+				
+			} 
+			catch (Exception e)
+			{
+				
+				return contador;
+			
+			}
+		default:
+			return contador;
+			
+		}
+		
+	}
+	
+	public void validandoOperaciones()
+	{
+		
+		// Cíclo para el llenado de Tipo de datos, variables y valores
+		for(int i = 0; i < datos.size(); i++)
+		{
+			
+			String anterior = ""; // Apunta atrás del tipo de paréntesis
+			String dato = datos.get(i); // Apunta al paréntesis
+			String siguiente = ""; // Apunta a la variable
+			String siguiente2 = ""; // Apunta al tipo de operando
+			String siguiente3 = ""; // Apunta a la variable 2
+			
+			if(i != 0)
+				anterior = datos.get(i - 1);
+			
+			if(i < datos.size() - 1)
+				siguiente = datos.get(i + 1);
+			
+			if(i < datos.size() - 2)
+				siguiente2 = datos.get(i + 2);
+			
+			if(i < datos.size() - 3)
+				siguiente3 = datos.get(i + 3);
+			
+			/*if(anterior.equals("if") || anterior.equals("while")) // Si antes del parentesis existe if o while
+			{
+			
+				boolean operandoOperador = validarSiEsOperandoOperador(siguiente);
+				
+				if(siguiente2.equals("=") && (dato.equals("int") || dato.equals("boolean"))) // Si hay asignacion después de la variable y tipo de dato es entero o booleano
+				{
+					
+					if(!inicializada(siguiente))
+					{
+						
+					}
+					
+				}
+				
+			}*/	
+			
+		}	
+		
+	}
+		
+	/*public boolean validarSiEsOperandoOperador(String cadena)
+	{
+		
+		String cadena2 = "";
+		
+		for(int i = 0; i < variable.size(); i++)
+		{
+			
+			String s = variable.get(i);
+			
+			if(s.equals(cadena));
+				cadena2 = s;
+				
+			
+		}
+		
+	}*/
+	
+}
