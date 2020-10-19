@@ -51,31 +51,39 @@ public interface CompiladorConstants {
   /** RegularExpression Id. */
   int MenorQue = 20;
   /** RegularExpression Id. */
-  int Suma = 21;
+  int MenorIgualQue = 21;
   /** RegularExpression Id. */
-  int Resta = 22;
+  int MayorIgualQue = 22;
   /** RegularExpression Id. */
-  int Multiplicacion = 23;
+  int Diferente = 23;
   /** RegularExpression Id. */
-  int Coma = 24;
+  int Igual = 24;
   /** RegularExpression Id. */
-  int Punto = 25;
+  int Suma = 25;
   /** RegularExpression Id. */
-  int Longitud = 26;
+  int Resta = 26;
   /** RegularExpression Id. */
-  int Numero = 27;
+  int Multiplicacion = 27;
   /** RegularExpression Id. */
-  int Verdadero = 28;
+  int Coma = 28;
   /** RegularExpression Id. */
-  int Falso = 29;
+  int Punto = 29;
   /** RegularExpression Id. */
-  int Este = 30;
+  int Longitud = 30;
   /** RegularExpression Id. */
-  int Nuevo = 31;
+  int Numero = 31;
   /** RegularExpression Id. */
-  int Negacion = 32;
+  int Verdadero = 32;
   /** RegularExpression Id. */
-  int Identificador = 33;
+  int Falso = 33;
+  /** RegularExpression Id. */
+  int Este = 34;
+  /** RegularExpression Id. */
+  int Nuevo = 35;
+  /** RegularExpression Id. */
+  int Negacion = 36;
+  /** RegularExpression Id. */
+  int Identificador = 37;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -103,6 +111,10 @@ public interface CompiladorConstants {
     "\"=\"",
     "\"&&\"",
     "\"<\"",
+    "\"<=\"",
+    "\" >=\"",
+    "\"!=\"",
+    "\"==\"",
     "\"+\"",
     "\"-\"",
     "\"*\"",

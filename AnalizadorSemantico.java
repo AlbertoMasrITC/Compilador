@@ -33,7 +33,8 @@ public class AnalizadorSemantico
 		codigoGlobal = codigo;
 		recorrerCodigo(codigo);		
 		asignarCodigo(codigo);
-		TipoDatosVariablesValor();
+		TipoDatosVariablesValoresPosicionesAlcances();
+		validarSentencias();
 		imprimirTabla();
 		
 		System.out.println();
@@ -50,9 +51,12 @@ public class AnalizadorSemantico
 		{
 			
 			c++;
-			System.out.println(c+ ".- "+ linea.get(i));
+			System.out.println(c +".- "+ linea.get(i));
 			
 		}
+		
+		/*for(String s: datos)
+			System.out.println(s);*/
 		
 	}
 	
@@ -154,6 +158,14 @@ public class AnalizadorSemantico
 							datos.add(parrafo);
 							
 						}
+						
+						if(codigo.charAt(i) == '}')
+						{
+							
+							parrafo = Character.toString(codigo.charAt(i));
+							datos.add(parrafo);
+							
+						}
 
 					anterior = true;
 				
@@ -185,7 +197,7 @@ public class AnalizadorSemantico
 	}
 	
 	// Método para llenar los ArrayList de tipo de dato, variable, valor, posición y alcance
-	public void TipoDatosVariablesValor()
+	public void TipoDatosVariablesValoresPosicionesAlcances()
 	{
 		
 		// Cíclo para el llenado de Tipo de datos, variables, valores, posiciones y alcances
@@ -240,8 +252,10 @@ public class AnalizadorSemantico
 						tipoDato.add(dato);
 						variable.add(siguiente);
 															
-						String tipo = validar(siguiente, c); // Invoca al método validar para saber si el dato es el correcto HU02
+						String tipo = validarAsignacion(siguiente, c); // Invoca al método validar para saber si el dato es el correcto HU02
 						String tipo2 = "";
+						
+						System.out.println(c);
 						
 						int indice = validarIndice(siguiente, c); // Invoca al método validar para saber en donde se encuentra el indice de la asignacion incorrecta HU02
 									
@@ -337,11 +351,13 @@ public class AnalizadorSemantico
 											
 								}while(!siguiente3.equals(";"));
 										
-								String t = validar(siguiente, c);
+								String t = validarAsignacion(siguiente, c);
 								String tipo2 = "";
 										
 								int p = posicion(siguiente);			
 								posicion.add(p);
+								
+								System.out.println(t);
 										
 								if(t.equals("true"))
 								{
@@ -399,12 +415,13 @@ public class AnalizadorSemantico
 								tipoDato.add(dato);
 								variable.add(siguiente);
 								valor.add(null);
+								
+								
+								int p = posicion(siguiente); // Invoca al método posicion para obtener la posición			
+								posicion.add(p);
 										
 								String al = alcance(siguiente); // Invoca al método alcance para obtener el alcance		
 								alcance.add(al);
-																				
-								int p = posicion(siguiente); // Invoca al método posicion para obtener la posición			
-								posicion.add(p);
 										
 							}
 							else
@@ -437,7 +454,7 @@ public class AnalizadorSemantico
 			
 			posCadena = linea.get(i);
 			
-			if(posCadena.contains(" "+ codigo+ " "))
+			if(posCadena.contains(" "+ codigo+ " ") || posCadena.contains(" "+ codigo +";"))
 			{
 								
 				if(yaExiste == false)
@@ -513,6 +530,38 @@ public class AnalizadorSemantico
 			
 	}
 		
+	}
+	
+	public int posicionExpresion(String sentencia, String operando1, String operador, String operando2)
+	{
+			
+		// Cíclo para el llenado de la posición de la sentencia
+		String posCadena = "";
+		int posEntero = 0;
+		boolean yaExiste = false;
+				
+		for (int i = 0; i < linea.size(); i++) 
+		{
+					
+			posCadena = linea.get(i);
+					
+			if(posCadena.contains(sentencia))
+			{
+										
+				if(yaExiste == false)
+				{
+							
+					posEntero = i + 1;
+					yaExiste = true;
+							
+				}
+						
+			}
+					
+		}
+				
+		return posEntero;
+			
 	}
 	
 	public String alcance(String cadena)
@@ -600,44 +649,7 @@ public class AnalizadorSemantico
 		
 	}*/
 	
-	// Método para el llenado de la tabla de simbolos llenando los distintos ArrayList
-	public void imprimirTabla()
-	{		
-			
-			// Objeto TablaSimbolos
-			System.out.println("------------------------------------------------------------------------------");
-			System.out.println("                             Tabla de simbolos                                    ");
-			System.out.println("------------------------------------------------------------------------------");
-			System.out.println("  Tipo  |     Variable    |     Valor     |   Posición   |      Alcance      ");
-			System.out.println("------------------------------------------------------------------------------");
-			for(int i = 0; i < variable.size(); i++)
-			{
-				
-				System.out.format("%s\t\t %s\t\t %s \t\t %-10d \t %s", tipoDato.get(i), variable.get(i), valor.get(i), posicion.get(i), alcance.get(i));
-				System.out.println();
-				
-			}
-			
-			//TablaSimbolos t = new TablaSimbolos(tipoDato.get(i), variable.get(i), posicion.get(i), posicion.get(i), valor.get(i), alcance.get(i));
-						
-			/*for(String s: tipoDato)
-				System.out.print(s);
-			
-			for(String s: variable)
-				System.out.print("\t\t"+ s);
-			
-			for(int i: posicion)
-				System.out.print("\t\t\t\t"+ i);
-			
-			for(Object o: valor)
-				System.out.print("\t\t\t\t\t\t"+ o);
-			
-			for(String s: alcance)
-				System.out.print("\t\t\t\t\t\t\t\t"+ s);*/
-				
-	}
-	
-	public String validar(String cadena, String valor)
+	public String validarAsignacion(String cadena, String valor)
 	{
 		
 		int contador = 0;
@@ -759,21 +771,17 @@ public class AnalizadorSemantico
 		
 	}
 	
-	public void validandoOperaciones()
+	public void validarSentencias()
 	{
 		
 		// Cíclo para el llenado de Tipo de datos, variables y valores
 		for(int i = 0; i < datos.size(); i++)
 		{
 			
-			String anterior = ""; // Apunta atrás del tipo de paréntesis
-			String dato = datos.get(i); // Apunta al paréntesis
+			String dato = datos.get(i); // Apunta a la sentencia
 			String siguiente = ""; // Apunta a la variable
-			String siguiente2 = ""; // Apunta al tipo de operando
+			String siguiente2 = ""; // Apunta al tipo de operador
 			String siguiente3 = ""; // Apunta a la variable 2
-			
-			if(i != 0)
-				anterior = datos.get(i - 1);
 			
 			if(i < datos.size() - 1)
 				siguiente = datos.get(i + 1);
@@ -784,43 +792,168 @@ public class AnalizadorSemantico
 			if(i < datos.size() - 3)
 				siguiente3 = datos.get(i + 3);
 			
-			/*if(anterior.equals("if") || anterior.equals("while")) // Si antes del parentesis existe if o while
+			if(dato.equals("if") || dato.equals("while")) // Si es un if o while
 			{
 			
-				boolean operandoOperador = validarSiEsOperandoOperador(siguiente);
+				String operando1 = validarSiEsEnteroBooleano(siguiente); // Invoca al método para validar si es operador u operando
+				String operando2 = validarSiEsEnteroBooleano(siguiente3); // Invoca al método para validar si es operador u operando
+				boolean operadorValido = validarSiEsAritmeticoLogico(operando1, siguiente2, operando2); // Invoca al método para validar si es aritmético o lógico, regresa true si es válido para los dos operandos y false si es inválido
+
+				System.out.println(operando1);
+				System.out.println(operando2);
+				System.out.println(siguiente2);
 				
-				if(siguiente2.equals("=") && (dato.equals("int") || dato.equals("boolean"))) // Si hay asignacion después de la variable y tipo de dato es entero o booleano
+				if(!operadorValido) // Si hay asignacion después de la variable y tipo de dato es entero o booleano
 				{
 					
-					if(!inicializada(siguiente))
+					int p = posicionExpresion(dato, siguiente, siguiente2, siguiente3);
+					listaErroresSemanticos.add("HU05. No se puede realizar la expresión en la línea "+ p +", el tipo de dato "+ operando1 +" no corresponde al tipo de dato "+ operando2 +".");
+					
+					System.out.println("Entró al if del método");
+					
+				}
+				
+			}
+			
+			//System.out.println("Anetrior: "+ anterior +"\nActual: "+ dato +"\nSiguiente: "+ siguiente +"\nSiguiente2: "+ siguiente2 +"\nSiguiente3: "+ siguiente3 );
+			
+		}	
+				
+	}
+	
+	// Método para saber si la variable es entera o booleana
+	public String validarSiEsEnteroBooleano(String cadena)
+	{			
+				
+				if(existe(cadena))
+				{
+					
+					int contador = 0;
+					
+					for(int i = 0; i < variable.size(); i++)
 					{
 						
+						String s = variable.get(i);
+						
+						if(s.equals(cadena))
+							contador = i;
+						
+					}
+					
+					return tipoDato.get(contador);
+					
+				}
+				else
+				{
+					
+					if(esNumerico(cadena))
+					{
+						
+						return "int";
+						
+					}
+					if(cadena.equals("true") || cadena.equals("false"))
+					{
+						
+						return "boolean";
+						
+					}
+					else
+					{
+							
+						return "null";
+							
 					}
 					
 				}
 				
-			}*/	
-			
-		}	
-		
 	}
-		
-	/*public boolean validarSiEsOperandoOperador(String cadena)
+	
+	public boolean esNumerico(String cadena)
 	{
 		
-		String cadena2 = "";
-		
-		for(int i = 0; i < variable.size(); i++)
+		try
 		{
 			
-			String s = variable.get(i);
-			
-			if(s.equals(cadena));
-				cadena2 = s;
-				
-			
+			Integer.parseInt(cadena);
+			return true;
 		}
 		
-	}*/
+		catch (NumberFormatException nfe)
+		{
+			
+			return false;
+		
+		}
+		
+	}
+	
+	// Método para saber si el operador es aritmético o lógico
+	public boolean validarSiEsAritmeticoLogico(String operando1, String operador, String operando2)
+	{
+		
+		if(operando1.equals("int") && operando2.equals("int"))
+		{
+			
+			if(operador.equals("<") ||  operador.equals(">") || operador.equals("!=") || operador.equals("==") || operador.equals("<=") || operador.equals("=>"))
+			{
+				
+				return true;
+				
+			}
+			else
+			{
+				
+				return false;
+				
+			}
+			
+		}
+		else
+			if(operando1.equals("boolean") && operando2.equals("boolean"))
+			{
+				
+				if(operador.equals("&&") || operador.equals("!=") || operador.equals("=="))
+				{
+					
+					return true;
+					
+				}
+				else
+				{
+					
+					return false;
+					
+				}
+				
+			}
+			else
+			{
+				
+				return false;
+				
+			}
+		
+	}
+	
+	// Método para el llenado de la tabla de simbolos llenando los distintos ArrayList
+	public void imprimirTabla()
+	{		
+			
+			// Objeto TablaSimbolos
+			System.out.println("------------------------------------------------------------------------------");
+			System.out.println("                             Tabla de simbolos                                    ");
+			System.out.println("------------------------------------------------------------------------------");
+			System.out.println("  Tipo  |     Variable    |     Valor     |   Posición   |      Alcance      ");
+			System.out.println("------------------------------------------------------------------------------");
+			for(int i = 0; i < variable.size(); i++)
+			{
+				
+				System.out.format("%s\t\t %s\t\t %s \t\t %-10d \t %s", tipoDato.get(i), variable.get(i), valor.get(i), posicion.get(i), alcance.get(i));
+				System.out.println();
+				
+			}
+				
+	}
 	
 }

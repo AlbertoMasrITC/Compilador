@@ -1,0 +1,14 @@
+class Fac{
+    int a = 10;
+    public void ComputeFac()    {
+      boolean b = true;
+      if(3 < a) {
+         int c = 3;
+      }
+      else{
+}
+      int d = 30;
+      while(b != d) {
+}
+      }
+}
