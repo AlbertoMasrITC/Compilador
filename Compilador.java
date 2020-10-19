@@ -1,5 +1,3 @@
-package Prueba;
-
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 
@@ -13,9 +11,9 @@ class Compilador implements CompiladorConstants {
                         try
                         {
 
-                        	Compilador c = new Compilador(new FileReader("C:\\Users\\itzel\\OneDrive\\Escritorio\\RESPALDO ITZEL\\Prueba\\Prueba\\src\\CodigoHU05.txt"));
+                        	Compilador c = new Compilador(new FileReader("C:\\Users\\alber\\Desktop\\Prueba\\Prueba\\src\\CodigoHU03.txt"));
                  			 c.Clase();
-                             AnalizadorSemantico as = new AnalizadorSemantico("C:\\Users\\itzel\\OneDrive\\Escritorio\\RESPALDO ITZEL\\Prueba\\Prueba\\src\\CodigoHU05.txt");
+                             AnalizadorSemantico as = new AnalizadorSemantico("C:\\Users\\alber\\Desktop\\Prueba\\Prueba\\src\\CodigoHU03.txt");
                              System.out.println();
                              System.out.println("Éxito.");
 

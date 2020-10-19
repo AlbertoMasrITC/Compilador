@@ -1,5 +1,3 @@
-package Prueba;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -251,16 +249,16 @@ public class AnalizadorSemantico
 						
 						tipoDato.add(dato);
 						variable.add(siguiente);
-															
-						String tipo = validarAsignacion(siguiente, c); // Invoca al método validar para saber si el dato es el correcto HU02
-						String tipo2 = "";
-						
-						System.out.println(c);
-						
-						int indice = validarIndice(siguiente, c); // Invoca al método validar para saber en donde se encuentra el indice de la asignacion incorrecta HU02
-									
+
 						int p = posicion(siguiente); // Invoca al método posición para obtener la posición  de la variable
 						posicion.add(p);
+															
+						String tipo = validarAsignacion(siguiente, c, p); // Invoca al método validar para saber si el dato es el correcto HU02
+						String tipo2 = "";
+						
+						System.out.println(tipo);
+						
+						int indice = validarIndice(siguiente, c); // Invoca al método validar para saber en donde se encuentra el indice de la asignacion incorrecta HU02
 						
 						String al = alcance(siguiente);	// Invoca al método alcance para saber el alcance de la variable		
 						alcance.add(al);
@@ -279,12 +277,12 @@ public class AnalizadorSemantico
 											
 							}
 							else
-								if(!tipo.equals("null")) // Valida si el tipo es entero
+								if(!tipo.equals("null") && !tipo.contains("HU02. ") && !tipo.contains("HU03. ")) // Valida si el tipo es entero
 								{
 												
 									valor.add(c);
 											
-								}
+								} 
 								else
 								{
 												
@@ -304,9 +302,28 @@ public class AnalizadorSemantico
 										posicion.remove(indice);
 										alcance.remove(indice);
 									}
+										
+									if(tipo.contains("null"))
+									{
+										
+										listaErroresSemanticos.add("HU02. No se le puede asignar a la variable "+ siguiente + " el tipo de dato "+ tipo2 + " debido a que es "+  dato +" en la posición "+ p +".");
+										
+									}
+									else
+										if(tipo.contains("HU02. "))
+										{
+											
+											listaErroresSemanticos.add(tipo);
+											
+										}
+										else
+											if(tipo.contains("HU03. "))
+											{
 												
-									listaErroresSemanticos.add("HU02. No se le puede asignar a la variable "+ siguiente + " el tipo de dato "+ tipo2 + " debido a que es "+  dato +" en la posición "+ p +".");
+												listaErroresSemanticos.add(tipo);
 												
+											}
+									
 								}
 									
 					}
@@ -351,11 +368,11 @@ public class AnalizadorSemantico
 											
 								}while(!siguiente3.equals(";"));
 										
-								String t = validarAsignacion(siguiente, c);
-								String tipo2 = "";
-										
 								int p = posicion(siguiente);			
 								posicion.add(p);
+								
+								String t = validarAsignacion(siguiente, c, p);
+								String tipo2 = "";
 								
 								System.out.println(t);
 										
@@ -649,7 +666,7 @@ public class AnalizadorSemantico
 		
 	}*/
 	
-	public String validarAsignacion(String cadena, String valor)
+	public String validarAsignacion(String cadena, String valor, int p)
 	{
 		
 		int contador = 0;
@@ -686,22 +703,125 @@ public class AnalizadorSemantico
 				else
 				{
 					
-					return "null";
+					if(!existe(valor))
+						return "HU03. La variable "+ valor +" se está queriendo utilizar en la posición "+ p + " y no está definida.";
+					else
+						return "null";
 					
 				}
 		case "int":
-			try 
+
+			if(valor.length() != 1)
 			{
 				
-				Integer.parseInt(valor);
-				return valor;
+				int cont = 0;
 				
-			} 
-			catch (Exception e)
+				for(int i = 0; i < valor.length(); i++)
+				{
+					
+					String s = Character.toString(valor.charAt(i));
+					
+					if(valor.charAt(i) == '/' || valor.charAt(i) == '*' || valor.charAt(i) == '-' || valor.charAt(i) == '+')
+					{
+						
+						cont++;
+						
+					}
+					else
+						if(esNumerico(s))
+						{
+							
+							cont++;
+							
+						}
+						else
+							if(existe(s))
+							{
+								
+								int c2 = 0;
+								
+								for(int j = 0; j < variable.size(); j++)
+								{
+									
+									String s2 = variable.get(j);
+									
+									if(s2.equals(cadena))
+										c2 = j;
+									
+								}
+								
+								String tipo2 = tipoDato.get(contador);
+								
+								if(tipo2.equals("int"))
+									cont++;
+								else
+									return "HU02. No se le puede asignar a la variable "+ cadena + " el tipo de dato "+ tipo2 + " debido a que es "+  tipo +" en la posición "+ p +".";
+
+								
+							}
+							else
+								if(valor.equals("true") || valor.equals("false"))
+								{
+									
+									return "HU02. No se le puede asignar a la variable "+ cadena + " el tipo de dato boolean debido a que es "+  tipo +" en la posición "+ p +".";
+									
+								}
+								else
+								{
+									
+									return "HU03. La variable "+ s +" se está queriendo utilizar en la posición "+ p + " y no está definida.";
+									
+								}
+							
+					
+				}
+								
+				if(cont == valor.length())
+					return valor;
+				else
+					return "null";
+				
+			}
+			else
 			{
 				
-				return "null";
-			
+				if(esNumerico(valor))
+				{
+					
+					return valor;
+					
+				}
+				else
+					if(existe(valor))
+					{
+						
+						int c3 = 0;
+						
+						for(int j = 0; j < variable.size(); j++)
+						{
+							
+							String s3 = variable.get(j);
+							
+							if(s3.equals(cadena))
+								c3 = j;
+							
+						}
+						
+						String tipo3 = tipoDato.get(c3);
+						
+						if(tipo3.equals("int"))
+							return valor;
+						else
+							return "HU02. No se le puede asignar a la variable "+ cadena + " el tipo de dato "+ tipo3 + " debido a que es "+  tipo +" en la posición "+ p +".";
+						
+					}
+					else
+					{
+						
+						return "HU03. La variable "+ valor +" se está queriendo utilizar en la posición "+ p + " y no está definida.";
+						
+					}
+				
 			}
 		default:
 			return "null";

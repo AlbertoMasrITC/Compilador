@@ -1,0 +1,6 @@
+class Fac{
+int a = 1 + 2;
+int c = h;
+boolean b = false;
+boolean e = d;
+}
