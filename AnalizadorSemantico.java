@@ -1,4 +1,4 @@
-package Prueba;
+package Compilador;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -22,7 +22,7 @@ public class AnalizadorSemantico
 	// Crea ArrayList para almacenar los errores
 	ArrayList <String> listaErroresSemanticos = new ArrayList<String>();
 	
-	// Crea ArrayList para almacenar la posicion en donde se encuentra una expresion compuesta para aplicar el codigo intermedio]
+	// Crea ArrayList para almacenar la posicion en donde se encuentra una expresion compuesta para aplicar el código intermedio
 	ArrayList <Integer> posicionExpresionCompuesta = new ArrayList<Integer>();
 		
 	// Constructor que invoca cada uno de los métodos del programa
@@ -34,15 +34,7 @@ public class AnalizadorSemantico
 		asignarCodigo(codigo); // Asigna el código a una pila de datos
 		TipoDatosVariablesValoresPosicionesAlcances(); // Método para llenar los arraylist y con ello la tabla de símbolos, también determina el analisis semántico
 		validarSentencias(); // Método para determinar la correcta función e los operando-operaciones en las sentenicas
-		imprimirTabla(); // Imprime la tabla de símbolos
 		
-		System.out.println();
-		
-		// Imprime los errores semánticos encontrados
-		for(String s: listaErroresSemanticos)
-			System.err.println(s);
-		
-		System.out.println();
 		System.out.println();
 		
 		// Imprime línea por línea con su respectivo renglón
@@ -54,6 +46,20 @@ public class AnalizadorSemantico
 			System.out.println(c +".- "+ linea.get(i));
 			
 		}
+		
+		System.out.println();
+		
+		imprimirTabla(); // Imprime la tabla de símbolos
+		
+		System.out.println();
+		
+		// Imprime los errores semánticos encontrados
+		for(String s: listaErroresSemanticos)
+			System.err.println(s);
+		
+		System.out.println();
+		
+		codigoIntermedio(); // Método para determinar el código intermedio y mostrarlo
 		
 	}
 	
@@ -370,7 +376,7 @@ public class AnalizadorSemantico
 											
 							}while(!siguiente3.equals(";"));
 										
-							int p = posicion(siguiente); // Invoca al método posición para obtener la posición  de la variable
+							int p = posicionSegunda(siguiente); // Invoca al método posición para obtener la posición  de la variable
 							posicion.add(p);
 																
 							String tipo = validarAsignacion(siguiente, c, p); // Invoca al método validar para saber si el dato es el correcto HU02
@@ -847,7 +853,7 @@ public class AnalizadorSemantico
 					
 				}
 				
-				System.out.println("En la posición "+ p +" hay una expresión compuesta");
+				System.out.println("Hay una expresión compuesta en la linea "+ p);
 				posicionExpresionCompuesta.add(p); // Agrega la posicion de la linea en donde hay una expresión compuesta
 				return valor;
 				
@@ -1154,7 +1160,239 @@ public class AnalizadorSemantico
 	public void codigoIntermedio()
 	{
 		
-		
+		for(int i = 0; i < posicionExpresionCompuesta.size(); i++)
+		{
+			
+			String expresionCompuesta = linea.get(posicionExpresionCompuesta.get(i) - 1);
+			
+			String parrafo = ""; // Pedazos del parrafo que se asignan al ArrayList datos
+	        boolean esVariable = false; // Identifica si se trata de una variable durante la iteración
+	        int inicioEntero = 0; // Inicio de la subcadena
+	        boolean inicioBooleano = true; // Inicia para saber si se trata de una variable
+	        boolean anterior = false; // 
+	        
+	        // Crea un arreglo que almacenará temporalmente las partes de la expresión compuesta
+	        ArrayList<String> arregloExpresionCompuesta = new ArrayList<String>();
+	       
+	        // Arreglo que recorre el renglón en el que se encontró la expresión compuesta para poder meter el código en una pila y su posterior uso
+			for (int j = 0; j < expresionCompuesta.length(); j++) 
+			{
+				
+				if (expresionCompuesta.charAt(j) == '{' || expresionCompuesta.charAt(j) == '}' || expresionCompuesta.charAt(j) == ';' || expresionCompuesta.charAt(j) == ' ' || expresionCompuesta.charAt(j) == '(' || expresionCompuesta.charAt(j) == ')')
+				{
+					
+						
+							if(anterior == false)
+							{
+								
+								parrafo = expresionCompuesta.substring(inicioEntero, j);
+								arregloExpresionCompuesta.add(parrafo);
+								parrafo = "";
+								
+								esVariable = false;	
+								inicioBooleano = true;
+								
+							}
+							
+							if(expresionCompuesta.charAt(j) == ';')
+							{
+								
+								parrafo = Character.toString(expresionCompuesta.charAt(j));
+								arregloExpresionCompuesta.add(parrafo);
+								
+							}
+							
+							if(expresionCompuesta.charAt(j) == '}')
+							{
+								
+								parrafo = Character.toString(expresionCompuesta.charAt(j));
+								arregloExpresionCompuesta.add(parrafo);
+								
+							}
+
+						anterior = true;
+					
+				} 
+				else
+				{
+					
+					esVariable = true;
+					
+				}
+				
+				if(esVariable == true)
+				{
+					
+					if(inicioBooleano == true)
+					{
+						
+						inicioEntero = j;
+						
+					}
+					
+					inicioBooleano = false;
+					anterior = false;
+					
+				}
+				
+			}
+			
+			// String que almacena la variable para su posterior uso
+			String variable = "";
+			
+			// Crea ArrayList de los operandos y operador
+			ArrayList<String> operando1 = new ArrayList<String>();
+			ArrayList<String> operador = new ArrayList<String>();
+			ArrayList<Integer> indiceOperador = new ArrayList<Integer>(); // ArrayList para almacenar el indice de los operadores
+			ArrayList<String> operando2 = new ArrayList<String>();
+			
+			// Contador para determinar el indice de los operadores
+			int contadorIndiceOperador = 0;
+			
+			// Arreglo que recorre la pila de la expresión compuesta para almacenar los operandos y operador.
+			for(int j = 0; j < arregloExpresionCompuesta.size(); j++)
+			{
+				
+				System.out.println(arregloExpresionCompuesta.get(j));
+				
+				String anterior2 = ""; // Apunta atrás de la variable/operador
+				String dato = arregloExpresionCompuesta.get(j); // Apunta a la variable/operador
+				String siguiente = ""; // Apunta adelante da la variable/operador
+				
+				if(j != 0)
+					anterior2 = arregloExpresionCompuesta.get(j - 1);
+						
+				if(j < arregloExpresionCompuesta.size() - 1)
+					siguiente = arregloExpresionCompuesta.get(j + 1);
+				
+				// Si detrás de la variable hay un tipo de dato o después hay una igualdad almacena el nombre de la variable
+				if(anterior2.equals("int") || siguiente.equals("="))
+				{
+					
+					variable = dato;
+					
+				}
+				
+				// Si el operador es alguno de estos simbolos matemáticos almacena el operando 1 y operando 2 en sus arreglos correspondientes
+				if(dato.equals("/") || dato.equals("*") || dato.equals("-") || dato.equals("+"))
+				{
+					
+					contadorIndiceOperador++;
+					
+					operando1.add(anterior2);
+					operador.add(dato);
+					indiceOperador.add(contadorIndiceOperador);
+					operando2.add(siguiente);
+										
+				}
+				
+			}
+			
+			for(int j = 0; j < operador.size(); j++)
+			{
+				
+				System.out.println(variable +" "+ operando1.get(j) +" "+ "("+ indiceOperador.get(j) +") "+ operador.get(j) +" "+ operando2.get(j));
+				
+			}
+			
+			// Arreglo que define la jerarquía de los operadores
+			for(int j = 0; j < operador.size(); j++)
+			{
+				
+				// Arreglo auxiliar para acomodar la precedencia de los operadores
+				ArrayList<String> arregloAuxiliarOperando1 = new ArrayList<String>();
+				
+				// Arreglo auxiliar para acomodar la precedencia de los operadores
+				ArrayList<String> arregloAuxiliarOperador = new ArrayList<String>();
+				
+				// Arreglo para dar indice a los operadores
+				ArrayList<Integer> arreloAuxiliarIndiceOperador = new ArrayList<Integer>();
+				
+				// Arreglo auxiliar para acomodar la precedencia de los operadores
+				ArrayList<String> arregloAuxiliarOperando2 = new ArrayList<String>();
+				
+				String datoOperando1 = operando1.get(j); // Apuntado al operador
+				String siguienteOperando1 = ""; // Apunta adelante dal operador
+				
+				if(j < operando1.size() - 1)
+					siguienteOperando1 = operando1.get(j + 1);
+				
+				String datoOperador = operador.get(j); // Apuntado al operador
+				String siguienteOperador = ""; // Apunta adelante dal operador
+				
+				if(j < operador.size() - 1)
+					siguienteOperador = operador.get(j + 1);
+				
+				int datoIndiceOperador = indiceOperador.get(j); // Apuntado al indice del operador
+				int siguienteIndiceOperador = 0; // Apunta adelante dal indice del operador operador
+				
+				if(j < operador.size() - 1)
+					siguienteIndiceOperador = indiceOperador.get(j + 1);
+				
+				String datoOperando2 = operando2.get(j); // Apuntado al operador
+				String siguienteOperando2 = ""; // Apunta adelante dal operador
+				
+				if(j < operando2.size() - 1)
+					siguienteOperando2 = operando2.get(j + 1);
+				
+				// Si el operador es igual a "-" ó "+"
+				if(datoOperador.equals("-") || datoOperador.equals("+"))
+				{
+					
+					// Si la siguiente posición al operador es "/" ó "*"
+					if(siguienteOperador.equals("/") || siguienteOperador.equals("*"))
+					{
+						
+						// Intercambia el operando1 con mayor prioridad con el de menor
+						arregloAuxiliarOperando1.add(siguienteOperando1);
+						String auxOperando1 = arregloAuxiliarOperando1.get(0);
+						operando1.set(j + 1, datoOperando1);
+						operando1.set(j, auxOperando1);
+						
+						// Intercambia el operador con mayor prioridad con el de menor
+						arregloAuxiliarOperador.add(siguienteOperador);
+						String auxOperador = arregloAuxiliarOperador.get(0);
+						operador.set(j + 1, datoOperador);
+						operador.set(j, auxOperador);
+						
+						// Intercambia el indice del operador dependiendo de los cambios del operador con mayor prioridad con el de menor
+						arreloAuxiliarIndiceOperador.add(siguienteIndiceOperador);
+						int auxIndiceOperador = arreloAuxiliarIndiceOperador.get(0);
+						indiceOperador.set(j + 1, datoIndiceOperador);
+						indiceOperador.set(j, auxIndiceOperador);
+						
+						// Intercambia el operando1 con mayor prioridad con el de menor
+						arregloAuxiliarOperando2.add(siguienteOperando2);
+						String auxOperando2 = arregloAuxiliarOperando2.get(0);
+						operando2.set(j + 1, datoOperando2);
+						operando2.set(j, auxOperando2);
+						
+						j = -1;
+						
+					}
+					
+				}
+				
+			}
+			
+			System.out.println();
+			
+			for(int j = 0; j < operador.size(); j++)
+			{
+				
+				System.out.println(variable +" "+ operando1.get(j) +" "+ "("+ indiceOperador.get(j) +") "+ operador.get(j) +" "+ operando2.get(j));
+				
+			}
+									
+			System.out.println("------------------------------------------------------------------------------");
+			System.out.println("                             Código intermedio #"+ (i+1) +"                                  ");
+			System.out.println("------------------------------------------------------------------------------");
+			System.out.println(expresionCompuesta);
+			System.out.println("------------------------------------------------------------------------------");
+			System.out.println("   Resultado    |      Operando 1     |    Operador   |       Operando 2      ");
+			System.out.println("------------------------------------------------------------------------------");
+			
+		}
 		
 	}
 	
