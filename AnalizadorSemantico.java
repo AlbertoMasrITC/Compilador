@@ -1,4 +1,4 @@
-package Compilador;
+package Prueba;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -16,6 +16,7 @@ public class AnalizadorSemantico
 	ArrayList<String> tipoDato = new ArrayList<String>();
 	ArrayList<String> variable = new ArrayList<String>();
 	ArrayList<String> valor = new ArrayList<String>();
+	ArrayList<String> valorAnterior = new ArrayList<String>();
 	ArrayList<Integer> posicion = new ArrayList<Integer>();
 	ArrayList<String> alcance = new ArrayList<String>();
 	
@@ -24,6 +25,10 @@ public class AnalizadorSemantico
 	
 	// Crea ArrayList para almacenar la posicion en donde se encuentra una expresion compuesta para aplicar el código intermedio
 	ArrayList <Integer> posicionExpresionCompuesta = new ArrayList<Integer>();
+	
+	// Arrelo estático para crear las temporales con el nombre
+	String[] temporalesCadenas;
+	int[] temporalesEnteros;
 		
 	// Constructor que invoca cada uno de los métodos del programa
 	public AnalizadorSemantico(String URL)
@@ -270,6 +275,7 @@ public class AnalizadorSemantico
 						{
 										
 							valor.add(c);
+							valorAnterior.add(c);
 										
 						}
 						else
@@ -277,6 +283,7 @@ public class AnalizadorSemantico
 							{
 											
 								valor.add(c);
+								valorAnterior.add(c);
 											
 							}
 							else
@@ -284,6 +291,7 @@ public class AnalizadorSemantico
 								{
 												
 									valor.add(c);
+									valorAnterior.add(c);
 											
 								} 
 								else
@@ -295,6 +303,7 @@ public class AnalizadorSemantico
 										tipo2 = "int"; // Si el dato es booleano se le asigna entero a tipo2 para llenar la HU02
 									
 									valor.add("null"); // Se agrega nulo a valor debido a que no es del tipo de dato la asignación que se quiso hacer
+									valorAnterior.add("null"); // Se agrega nulo a valor debido a que no es del tipo de dato la asignación que se quiso hacer a valor anterior
 									
 									if(indice >= 0)
 									{
@@ -304,6 +313,7 @@ public class AnalizadorSemantico
 										valor.remove(indice);
 										posicion.remove(indice);
 										alcance.remove(indice);
+										valorAnterior.remove(indice);
 									}
 										
 									if(tipo.contains("null"))
@@ -356,7 +366,8 @@ public class AnalizadorSemantico
 										
 								
 							}
-											
+							
+							valorAnterior.add(valor.get(contador));											
 										
 							int j = i + 3; // Apunta al valor (Por si es un valor compuesto)
 							String c = ""; // Obtiene la cadena de un valor compuesto
@@ -377,15 +388,15 @@ public class AnalizadorSemantico
 							}while(!siguiente3.equals(";"));
 										
 							int p = posicionSegunda(siguiente); // Invoca al método posición para obtener la posición  de la variable
-							posicion.add(p);
+							//posicion.add(p);
 																
 							String tipo = validarAsignacion(siguiente, c, p); // Invoca al método validar para saber si el dato es el correcto HU02
 							String tipo2 = "";
 																		
 							int indice = validarIndice(siguiente, c); // Invoca al método validar para saber en donde se encuentra el indice de la asignacion incorrecta HU02
 							
-							String al = alcance(siguiente);	// Invoca al método alcance para saber el alcance de la variable		
-							alcance.add(al);
+							//String al = alcance(siguiente);	// Invoca al método alcance para saber el alcance de la variable		
+							//alcance.add(al);
 										
 							if(tipo.equals("true")) // Valida si el tipo es booleano
 							{
@@ -425,6 +436,8 @@ public class AnalizadorSemantico
 											valor.remove(indice);
 											posicion.remove(indice);
 											alcance.remove(indice);
+											valorAnterior.remove(indice);
+
 										}
 											
 										if(tipo.contains("null"))
@@ -673,6 +686,28 @@ public class AnalizadorSemantico
 		
 	}
 	
+	public boolean existeTemporal(String cadena)
+	{
+		
+		boolean existe = false;
+		
+		for(int i = 0; i < temporalesCadenas.length; i++)
+		{
+			
+			String dato = temporalesCadenas[i];
+			
+			if(dato.equals(cadena))
+				existe = true;
+						
+		}
+		
+		if(existe == true)
+			return true;
+		else
+			return false;
+		
+	}
+	
 	// Método para validar si la asignación es correcta o incorrecta, también evalúa las asignaciones compuestas
 	public String validarAsignacion(String cadena, String valor, int p)
 	{
@@ -853,7 +888,6 @@ public class AnalizadorSemantico
 					
 				}
 				
-				System.out.println("Hay una expresión compuesta en la linea "+ p);
 				posicionExpresionCompuesta.add(p); // Agrega la posicion de la linea en donde hay una expresión compuesta
 				return valor;
 				
@@ -1140,19 +1174,19 @@ public class AnalizadorSemantico
 	public void imprimirTabla()
 	{		
 			
-			// Objeto TablaSimbolos
-			System.out.println("------------------------------------------------------------------------------");
-			System.out.println("                             Tabla de simbolos                                    ");
-			System.out.println("------------------------------------------------------------------------------");
-			System.out.println("  Tipo  |     Variable    |     Valor     |   Posición   |      Alcance      ");
-			System.out.println("------------------------------------------------------------------------------");
-			for(int i = 0; i < variable.size(); i++)
-			{
-				
-				System.out.format("%s\t\t %s\t\t %s \t\t %-10d \t %s", tipoDato.get(i), variable.get(i), valor.get(i), posicion.get(i), alcance.get(i));
-				System.out.println();
-				
-			}
+		// Objeto TablaSimbolos
+		System.out.println("-----------------------------------------------------------------------------------");
+		System.out.println("                                Tabla de simbolos                                       ");
+		System.out.println("-----------------------------------------------------------------------------------");
+		System.out.println("  Tipo  |     Variable    |       Valor       |      Posición      |     Alcance    ");
+		System.out.println("-----------------------------------------------------------------------------------");
+		for(int i = 0; i < variable.size(); i++)
+		{
+			
+			System.out.format("%-10s  %-10s\t\t  %-10s \t\t %-10d \t %-10s ", tipoDato.get(i), variable.get(i), valor.get(i), posicion.get(i), alcance.get(i));
+			System.out.println();
+			
+		}
 				
 	}
 	
@@ -1252,9 +1286,7 @@ public class AnalizadorSemantico
 			// Arreglo que recorre la pila de la expresión compuesta para almacenar los operandos y operador.
 			for(int j = 0; j < arregloExpresionCompuesta.size(); j++)
 			{
-				
-				System.out.println(arregloExpresionCompuesta.get(j));
-				
+								
 				String anterior2 = ""; // Apunta atrás de la variable/operador
 				String dato = arregloExpresionCompuesta.get(j); // Apunta a la variable/operador
 				String siguiente = ""; // Apunta adelante da la variable/operador
@@ -1287,13 +1319,13 @@ public class AnalizadorSemantico
 				}
 				
 			}
-			
-			for(int j = 0; j < operador.size(); j++)
+						
+			/*for(int j = 0; j < operador.size(); j++)
 			{
 				
 				System.out.println(variable +" "+ operando1.get(j) +" "+ "("+ indiceOperador.get(j) +") "+ operador.get(j) +" "+ operando2.get(j));
 				
-			}
+			}*/
 			
 			// Arreglo que define la jerarquía de los operadores
 			for(int j = 0; j < operador.size(); j++)
@@ -1375,24 +1407,229 @@ public class AnalizadorSemantico
 				
 			}
 			
-			System.out.println();
+			/*System.out.println();
 			
 			for(int j = 0; j < operador.size(); j++)
 			{
 				
 				System.out.println(variable +" "+ operando1.get(j) +" "+ "("+ indiceOperador.get(j) +") "+ operador.get(j) +" "+ operando2.get(j));
 				
+			}*/
+			
+			// Arrelo estático para crear las temporales con el nombre
+			temporalesCadenas = new String [operador.size()];
+			temporalesEnteros = new int [operador.size()];
+			
+			// Cíclo para el llenado de las temporales y dividir el codigo intermedio y la posición de las temporales en la división del código
+			for(int j = 0; j < operador.size(); j++)
+			{
+				
+				//if(j % 2 == 0)
+					temporalesCadenas [j] = "alberto" +  (j + 1);
+				//else
+					//temporalesCadenas [j] = "itzel" +(j + 1)+ "  ";
+
+				temporalesEnteros[j] = 0;
+				
+				int anteriorIndiceOperador = 0; // Apunta atrás del indice del operador
+				int anteriorIndiceOperador2 = 0; // Apunta atrás-atrás del indice del operador
+				int datoindiceOperador = indiceOperador.get(j); // Apunta al indice del operador
+				int siguienteIndiceOperador = 0; // Apunta adelante del indice del operador
+						
+				if(j != 0)
+					anteriorIndiceOperador = indiceOperador.get(j - 1);
+				
+				if(j > 1)
+					anteriorIndiceOperador2 = indiceOperador.get(j - 2);
+						
+				if(j < indiceOperador.size() - 1)
+					siguienteIndiceOperador = indiceOperador.get(j + 1);
+				
+				// Si no es la primera iteración
+				if(anteriorIndiceOperador != 0)
+				{
+					
+					// Si atrás del indice del operador es igual al indice actual - 1 y después del indice del operador es igual al indice actual + 1 ó es el último elemento
+					if((anteriorIndiceOperador == datoindiceOperador - 1) && ((siguienteIndiceOperador == datoindiceOperador + 1) || (j == operador.size() - 1)))
+					{
+						
+						// Si atrás atrás del indice del operador actual es igual al indice actual - 2
+						if(anteriorIndiceOperador2 == datoindiceOperador - 2)
+						{
+							
+							operando1.set(j, temporalesCadenas[j - 1]);
+							
+						}
+						else // Sino asignamos temporales a ambos lados
+						{
+							
+							operando1.set(j, temporalesCadenas[j - 1]);
+							operando2.set(j, temporalesCadenas[j - 2]);
+							
+						}
+												
+					}
+					else
+						// Si atrás del 
+						if((anteriorIndiceOperador != datoindiceOperador - 1) && ((siguienteIndiceOperador != datoindiceOperador + 1)))
+						{
+								
+							if(j != operador.size() - 1)	
+								operando2.set(j, temporalesCadenas[j - 1]);
+							else
+								operando1.set(j, temporalesCadenas[j - 1]);
+								
+						}
+
+				}
+				
 			}
-									
+			
+			/*System.out.println();
+			
+			for(int j = 0; j < operador.size(); j++)
+			{
+				
+				System.out.println(temporalesCadenas[j] + " "+ operando1.get(j) +" "+ "("+ indiceOperador.get(j) +") "+ operador.get(j) +" "+ operando2.get(j));
+				
+				if(j == operador.size() - 1)
+					System.out.println(variable +" "+ temporalesCadenas[j] + " = ");
+				
+			}
+			
+			System.out.println();*/
+
+			// Arrelo estático para crear las temporales con el valor y determinar los valores
+			int[] operandos1Enteros = new int [operador.size()];
+			int[] operandos2Enteros = new int [operador.size()];
+			int variableEntero = 0; // Variable para guardar el valor del entero
+			
+			for(int j = 0; j < temporalesCadenas.length; j++)
+			{
+				
+				String op1 = operando1.get(j);
+				String op2 = operando2.get(j);
+				
+				int op1Valor = valorOperando(op1);
+				int op2Valor = valorOperando(op2);
+				
+				operandos1Enteros[j] = op1Valor;
+				operandos2Enteros[j] = op2Valor;
+				
+				temporalesEnteros[j] = resultadoExpresion(operandos1Enteros[j], operador.get(j), operandos2Enteros[j]);
+				
+				if(j == temporalesCadenas.length - 1)
+					variableEntero = temporalesEnteros[j];
+				
+			}
+
 			System.out.println("------------------------------------------------------------------------------");
-			System.out.println("                             Código intermedio #"+ (i+1) +"                                  ");
+			System.out.println("                             Código intermedio #"+ (i+1) +"                   ");
 			System.out.println("------------------------------------------------------------------------------");
-			System.out.println(expresionCompuesta);
+			System.out.println("                     "+ expresionCompuesta);
 			System.out.println("------------------------------------------------------------------------------");
 			System.out.println("   Resultado    |      Operando 1     |    Operador   |       Operando 2      ");
 			System.out.println("------------------------------------------------------------------------------");
+			for(int j = 0; j < operador.size(); j++)
+			{
+
+				System.out.format("%-10s\t\t %-10s\t %-10s \t\t %-10s", temporalesCadenas[j], operando1.get(j), operador.get(j), operando2.get(j));
+				System.out.println();
+				
+				if(j == operador.size() - 1)
+				{
+					
+					System.out.format("%-10s\t\t %-10s\t %-10s \t\t %-10s", variable, temporalesCadenas[j], "=", " ");
+					System.out.println("\n");
+					System.out.println(variable +" := "+ temporalesEnteros[j]);
+					System.out.println("\n");
+					
+				}
+				
+			}
 			
 		}
+		
+	}
+	
+	public int valorOperando(String operando)
+	{
+		
+		if(existe(operando))
+		{
+			
+			int contador = 0;
+			
+			for(int i = 0; i < variable.size(); i++)
+			{
+				
+				if(operando.equals(variable.get(i)))
+				{
+					
+					contador = i;
+					return Integer.parseInt(valorAnterior.get(contador));
+					
+				}
+				
+			}
+			
+		}
+		else
+			if(existeTemporal(operando))
+			{
+				
+				int contador = 0;
+				
+				for(int i = 0; i < temporalesCadenas.length; i++)
+				{
+					
+					if(operando.equals(temporalesCadenas[i]))
+					{
+						
+						contador = i;
+						
+						return temporalesEnteros[contador];
+						
+					}
+					
+				}
+				
+			}
+			else
+			{
+				
+				return Integer.parseInt(operando);
+				
+			}
+		return 0;
+				
+	}
+	
+	public int resultadoExpresion(int operando1, String operador, int operando2)
+	{
+		
+		if(operador.equals("*"))
+		{
+			
+			return operando1 * operando2;
+			
+		}
+		else
+			if(operador.equals("-"))
+			{
+				
+				return operando1 - operando2;
+				
+			}
+			else
+				if(operador.equals("+"))
+				{
+					
+					return operando1 + operando2;
+					
+				}
+		
+		return 0;
 		
 	}
 	

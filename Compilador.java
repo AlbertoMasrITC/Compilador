@@ -13,11 +13,11 @@ class Compilador implements CompiladorConstants {
                         try
                         {
 
-                        	Compilador c = new Compilador(new FileReader("D:\\Alberto\\Escuela\\Tecnológico de Culiacán\\7mo Semestre\\Lenguajes y autómatas ll\\Compilador\\CodigoHU00.txt"));
-                 			 c.Clase();
-                             AnalizadorSemantico as = new AnalizadorSemantico("D:\\Alberto\\Escuela\\Tecnológico de Culiacán\\7mo Semestre\\Lenguajes y autómatas ll\\Compilador\\CodigoHU00.txt");
-                             System.out.println();
-                             System.out.println("Éxito.");
+                        	Compilador c = new Compilador(new FileReader("D:\\Alberto\\Escuela\\Tecnológico de Culiacán\\7mo Semestre\\Lenguajes y autómatas ll\\Compilador\\CodigoIntermedio.txt"));
+               			 c.Clase();
+                           AnalizadorSemantico as = new AnalizadorSemantico("D:\\Alberto\\Escuela\\Tecnológico de Culiacán\\7mo Semestre\\Lenguajes y autómatas ll\\Compilador\\CodigoIntermedio.txt");
+                           System.out.println();
+                           System.out.println("Éxito.");
 
                         }
                         catch(ParseException e)
@@ -758,13 +758,6 @@ class Compilador implements CompiladorConstants {
     finally { jj_save(57, xla); }
   }
 
-  static private boolean jj_3_58() {
-    if (jj_scan_token(ParentesisIzquierdo)) return true;
-    if (jj_3R_14()) return true;
-    if (jj_scan_token(ParentesisDerecho)) return true;
-    return false;
-  }
-
   static private boolean jj_3_57() {
     if (jj_scan_token(Negacion)) return true;
     Token xsp;
@@ -783,7 +776,7 @@ class Compilador implements CompiladorConstants {
 
   static private boolean jj_3_56() {
     if (jj_scan_token(Nuevo)) return true;
-    if (jj_scan_token(37)) return true;
+    if (jj_scan_token(38)) return true;
     if (jj_scan_token(ParentesisIzquierdo)) return true;
     if (jj_scan_token(ParentesisDerecho)) return true;
     return false;
@@ -815,7 +808,7 @@ class Compilador implements CompiladorConstants {
   }
 
   static private boolean jj_3_53() {
-    if (jj_scan_token(37)) return true;
+    if (jj_scan_token(38)) return true;
     return false;
   }
 
@@ -927,7 +920,7 @@ class Compilador implements CompiladorConstants {
   static private boolean jj_3_49() {
     if (jj_scan_token(Este)) return true;
     if (jj_scan_token(Punto)) return true;
-    if (jj_scan_token(37)) return true;
+    if (jj_scan_token(38)) return true;
     if (jj_scan_token(ParentesisIzquierdo)) return true;
     Token xsp;
     xsp = jj_scanpos;
@@ -937,7 +930,7 @@ class Compilador implements CompiladorConstants {
   }
 
   static private boolean jj_3_48() {
-    if (jj_scan_token(37)) return true;
+    if (jj_scan_token(38)) return true;
     if (jj_scan_token(Punto)) return true;
     if (jj_scan_token(Longitud)) return true;
     return false;
@@ -959,12 +952,12 @@ class Compilador implements CompiladorConstants {
   }
 
   static private boolean jj_3_10() {
-    if (jj_scan_token(37)) return true;
+    if (jj_scan_token(38)) return true;
     return false;
   }
 
   static private boolean jj_3_7() {
-    if (jj_scan_token(37)) return true;
+    if (jj_scan_token(38)) return true;
     if (jj_scan_token(Asignacion)) return true;
     if (jj_3R_14()) return true;
     if (jj_scan_token(PuntoComa)) return true;
@@ -977,7 +970,7 @@ class Compilador implements CompiladorConstants {
   }
 
   static private boolean jj_3_30() {
-    if (jj_scan_token(37)) return true;
+    if (jj_scan_token(38)) return true;
     if (jj_scan_token(Asignacion)) return true;
     if (jj_3R_14()) return true;
     if (jj_scan_token(PuntoComa)) return true;
@@ -991,7 +984,7 @@ class Compilador implements CompiladorConstants {
 
   static private boolean jj_3_29() {
     if (jj_3R_13()) return true;
-    if (jj_scan_token(37)) return true;
+    if (jj_scan_token(38)) return true;
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3_23()) jj_scanpos = xsp;
@@ -1003,7 +996,7 @@ class Compilador implements CompiladorConstants {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3_22()) jj_scanpos = xsp;
-    if (jj_scan_token(37)) return true;
+    if (jj_scan_token(38)) return true;
     if (jj_scan_token(Asignacion)) return true;
     if (jj_3R_14()) return true;
     if (jj_scan_token(PuntoComa)) return true;
@@ -1094,7 +1087,7 @@ class Compilador implements CompiladorConstants {
   static private boolean jj_3R_12() {
     if (jj_scan_token(Publico)) return true;
     if (jj_3R_13()) return true;
-    if (jj_scan_token(37)) return true;
+    if (jj_scan_token(38)) return true;
     if (jj_scan_token(ParentesisIzquierdo)) return true;
     Token xsp;
     xsp = jj_scanpos;
@@ -1158,7 +1151,7 @@ class Compilador implements CompiladorConstants {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3_3()) jj_scanpos = xsp;
-    if (jj_scan_token(37)) return true;
+    if (jj_scan_token(38)) return true;
     if (jj_scan_token(Asignacion)) return true;
     if (jj_3R_14()) return true;
     if (jj_scan_token(PuntoComa)) return true;
@@ -1181,7 +1174,7 @@ class Compilador implements CompiladorConstants {
   static private boolean jj_3_12() {
     if (jj_scan_token(Coma)) return true;
     if (jj_3R_13()) return true;
-    if (jj_scan_token(37)) return true;
+    if (jj_scan_token(38)) return true;
     return false;
   }
 
@@ -1238,7 +1231,7 @@ class Compilador implements CompiladorConstants {
 
   static private boolean jj_3_13() {
     if (jj_3R_13()) return true;
-    if (jj_scan_token(37)) return true;
+    if (jj_scan_token(38)) return true;
     Token xsp;
     while (true) {
       xsp = jj_scanpos;
@@ -1259,7 +1252,7 @@ class Compilador implements CompiladorConstants {
 
   static private boolean jj_3_6() {
     if (jj_3R_13()) return true;
-    if (jj_scan_token(37)) return true;
+    if (jj_scan_token(38)) return true;
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3_4()) jj_scanpos = xsp;
@@ -1283,12 +1276,19 @@ class Compilador implements CompiladorConstants {
   }
 
   static private boolean jj_3_32() {
-    if (jj_scan_token(37)) return true;
+    if (jj_scan_token(38)) return true;
     return false;
   }
 
   static private boolean jj_3_2() {
     if (jj_3R_12()) return true;
+    return false;
+  }
+
+  static private boolean jj_3_58() {
+    if (jj_scan_token(ParentesisIzquierdo)) return true;
+    if (jj_3R_14()) return true;
+    if (jj_scan_token(ParentesisDerecho)) return true;
     return false;
   }
 
@@ -1522,7 +1522,7 @@ class Compilador implements CompiladorConstants {
   /** Generate ParseException. */
   static public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[45];
+    boolean[] la1tokens = new boolean[46];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
@@ -1539,7 +1539,7 @@ class Compilador implements CompiladorConstants {
         }
       }
     }
-    for (int i = 0; i < 45; i++) {
+    for (int i = 0; i < 46; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;

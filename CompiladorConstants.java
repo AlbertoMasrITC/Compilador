@@ -65,25 +65,27 @@ public interface CompiladorConstants {
   /** RegularExpression Id. */
   int Multiplicacion = 27;
   /** RegularExpression Id. */
-  int Coma = 28;
+  int División = 28;
   /** RegularExpression Id. */
-  int Punto = 29;
+  int Coma = 29;
   /** RegularExpression Id. */
-  int Longitud = 30;
+  int Punto = 30;
   /** RegularExpression Id. */
-  int Numero = 31;
+  int Longitud = 31;
   /** RegularExpression Id. */
-  int Verdadero = 32;
+  int Numero = 32;
   /** RegularExpression Id. */
-  int Falso = 33;
+  int Verdadero = 33;
   /** RegularExpression Id. */
-  int Este = 34;
+  int Falso = 34;
   /** RegularExpression Id. */
-  int Nuevo = 35;
+  int Este = 35;
   /** RegularExpression Id. */
-  int Negacion = 36;
+  int Nuevo = 36;
   /** RegularExpression Id. */
-  int Identificador = 37;
+  int Negacion = 37;
+  /** RegularExpression Id. */
+  int Identificador = 38;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -118,6 +120,7 @@ public interface CompiladorConstants {
     "\"+\"",
     "\"-\"",
     "\"*\"",
+    "\"/\"",
     "\",\"",
     "\".\"",
     "\"length\"",

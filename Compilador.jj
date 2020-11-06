@@ -48,7 +48,7 @@ TOKEN:
 TOKEN:
 {
 
-	<Clase: "class"> {System.out.println("\nClase -> " + image);} //8
+	<Clase: "class"> {System.out.println("Clase -> " + image);} //8
 
 }
 //Declaración del método
@@ -92,22 +92,23 @@ TOKEN:
 | 	<Suma: "+"> {System.out.println("Suma -> "+ image);} //25
 | 	<Resta: "-"> {System.out.println("Resta -> "+ image);} //26
 | 	<Multiplicacion: "*"> {System.out.println("Multiplicacion -> "+ image);} //27
-| 	<Coma : ","> {System.out.println("Coma -> "+ image);} //28
-| 	<Punto: "."> {System.out.println("Punto -> "+ image);} //29
-| 	<Longitud: "length"> {System.out.println("Longitud -> "+ image);} //30
-| 	<Numero: (["0"-"9"])+> {System.out.println("Numero -> "+ image);} //31
-| 	<Verdadero: "true"> {System.out.println("Verdadero -> "+ image);} //32
-| 	<Falso: "false"> {System.out.println("Falso ->"+ image);} //33
-| 	<Este: "this"> {System.out.println("Este ->"+ image);} //34
-| 	<Nuevo: "new"> {System.out.println("Nuevo -> "+ image);} //35
-| 	<Negacion: "!"> {System.out.println("Negacion ->"+ image);} //36
+| 	<División: "/"> {System.out.println("División -> "+ image);} //28
+| 	<Coma : ","> {System.out.println("Coma -> "+ image);} //29
+| 	<Punto: "."> {System.out.println("Punto -> "+ image);} //30
+| 	<Longitud: "length"> {System.out.println("Longitud -> "+ image);} //31
+| 	<Numero: (["0"-"9"])+> {System.out.println("Numero -> "+ image);} //32
+| 	<Verdadero: "true"> {System.out.println("Verdadero -> "+ image);} //33
+| 	<Falso: "false"> {System.out.println("Falso ->"+ image);} //34
+| 	<Este: "this"> {System.out.println("Este ->"+ image);} //35
+| 	<Nuevo: "new"> {System.out.println("Nuevo -> "+ image);} //36
+| 	<Negacion: "!"> {System.out.println("Negacion ->"+ image);} //37
 
 }
 //Identificador
 TOKEN:
 {
 
-	<Identificador: ["a"-"z", "A"-"Z"] (["a"-"z", "A"-"Z", "0"-"9", "_"])*> {System.out.println("Identificador -> "+ image);} //37
+	<Identificador: ["a"-"z", "A"-"Z"] (["a"-"z", "A"-"Z", "0"-"9", "_"])*> {System.out.println("Identificador -> "+ image);} //38
 
 }
 //Omitir

@@ -1,0 +1,10 @@
+class Fac{
+    int a = 5;
+    int hola = 3;
+    int c = 1;
+    public void ComputeFac()    {
+      a = 1 + a - 2 + 2;
+      int b = 3 + hola * 2 - 1;
+      c = 2 - c + 3 * hola;
+      }
+}
